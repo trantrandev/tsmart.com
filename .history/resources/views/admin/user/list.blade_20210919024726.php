@@ -273,7 +273,7 @@
                             $('#address-edit').val(response.data.address);
 
                             // avatar
-                            if(response.data.avatar != null){
+                            if(response.data.avatar != null || response.data.avatar != ''){
                                 $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
                             }
                         },

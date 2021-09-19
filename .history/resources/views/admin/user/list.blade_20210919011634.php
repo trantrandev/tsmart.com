@@ -237,7 +237,6 @@
             // edit
             function edit() {
                 $(document).on("click", "button.btn-edit", function(e) {
-                    // Lấy url từ data-url để trỏ đến controller xử lý
                     var url = $(this).attr('data-url');
                     // Đưa modal về mặc định
                     e.preventDefault();
@@ -246,36 +245,8 @@
                         type: 'get',
                         url: url,
                         success: function(response) {
-                            $('#name-edit').val(response.data.name);
-                            $('#email-edit').val(response.data.email);
-                            // gender
-                            if (response.data.gender == "male") {
-                                // xóa checked đã check trước
-                                $('#female-edit').removeAttr('checked');
-                                $('#male-edit').attr('checked', 'true');
-                            } else {
-                                $('#male-edit').removeAttr('checked');
-                                $('#female-edit').attr('checked', 'true');
-                            }
-                            //select status
-                            if (response.data.status == "active") {
-                                $('#status-edit option[value="active"]').attr('selected',
-                                    'selected');
-                            } else {
-                                $('#status-edit option[value="inactive"]').attr('selected',
-                                    'selected');
-                            }
-                            // phone
-                            $(".phone").inputmask({
-                                mask: "9999-999-999"
-                            });
-                            $('#phone-edit').val(response.data.phone);
-                            $('#address-edit').val(response.data.address);
+                            console.log(response);
 
-                            // avatar
-                            if(response.data.avatar != null){
-                                $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
-                            }
                         },
                         error: function(error) {
 

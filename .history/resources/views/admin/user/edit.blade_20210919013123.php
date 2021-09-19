@@ -45,7 +45,7 @@
                     <span class="text-danger" style="font-size:12px">(*)</span>
                 </div>
                 <div class="col-sm-10">
-                    {!! Form::email('email', '', ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email-edit', 'disabled' ]) !!}
+                    {!! Form::email('email', '', ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email-edit' ]) !!}
                     @error('email_edit')
                         <span class="text-danger d-block mt-1" style="font-size: 13px">{{ $message }}</span>
                     @enderror
@@ -111,7 +111,7 @@
                     {!! Form::label('avatar', 'Avatar') !!}
                 </div>
                 <div class="col-sm-10">
-                    <input type="file" class="custom-file-input" accept="image/*" id="up-avatar" name="avatar-edit">
+                    <input type="file" class="custom-file-input" accept="image/*" id="up-avatar-edit" name="avatar-edit">
                     <label class="custom-file-label" for="avatar" style="margin: 0 15px">Chọn
                         file</label>
                     <img src="{{ asset('admin/images/user/150.png') }}" class="mt-2"
@@ -127,7 +127,7 @@
             <div class="form-group row align-items-center">
                 <label class="col-sm-2"></label>
                 <div class="col-sm-10">
-                    {!! Form::submit('Update', ['class' => ['btn', 'btn-primary', 'btn-sm', 'mb-0'], 'name' => 'btn_update_edit']) !!}
+                    {!! Form::submit('Update', ['class' => ['btn', 'btn-primary', 'btn-sm', 'mb-0'], 'name' => 'btn_update_edit', 'id' => 'btn-update-edit']) !!}
                     <button class="btn btn-dark md-close btn-sm d-inline-block" type="button" style="font-size: 13px">Close !</button>
                 </div>
             </div>

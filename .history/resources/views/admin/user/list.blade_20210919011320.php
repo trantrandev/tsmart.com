@@ -118,10 +118,8 @@
                                                                 {!! Auth::id() == $user->id ? show_status_user_current($user->id) : show_status_user($user->status, $user->id) !!}
                                                             </td>
                                                             <td>
-                                                                <button
-                                                                    class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
-                                                                    type="button" data-modal="modal-edit-user"
-                                                                    data-url="{{ route('user.edit', $user->id) }}">
+                                                                <button class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
+                                                                    type="button" data-modal="modal-edit-user" data-url="{{ route('user.edit', $user->id) }}">
                                                                     <i class="feather icon-edit f-16  text-c-green"></i>
                                                                 </button>
 
@@ -236,51 +234,9 @@
 
             // edit
             function edit() {
-                $(document).on("click", "button.btn-edit", function(e) {
-                    // Lấy url từ data-url để trỏ đến controller xử lý
+                $(document).on("click", "button.btn-edit", function(e){
                     var url = $(this).attr('data-url');
-                    // Đưa modal về mặc định
-                    e.preventDefault();
-                    $.ajax({
-                        //phương thức get
-                        type: 'get',
-                        url: url,
-                        success: function(response) {
-                            $('#name-edit').val(response.data.name);
-                            $('#email-edit').val(response.data.email);
-                            // gender
-                            if (response.data.gender == "male") {
-                                // xóa checked đã check trước
-                                $('#female-edit').removeAttr('checked');
-                                $('#male-edit').attr('checked', 'true');
-                            } else {
-                                $('#male-edit').removeAttr('checked');
-                                $('#female-edit').attr('checked', 'true');
-                            }
-                            //select status
-                            if (response.data.status == "active") {
-                                $('#status-edit option[value="active"]').attr('selected',
-                                    'selected');
-                            } else {
-                                $('#status-edit option[value="inactive"]').attr('selected',
-                                    'selected');
-                            }
-                            // phone
-                            $(".phone").inputmask({
-                                mask: "9999-999-999"
-                            });
-                            $('#phone-edit').val(response.data.phone);
-                            $('#address-edit').val(response.data.address);
-
-                            // avatar
-                            if(response.data.avatar != null){
-                                $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
-                            }
-                        },
-                        error: function(error) {
-
-                        }
-                    })
+                    console.log(url);
                 })
             }
 

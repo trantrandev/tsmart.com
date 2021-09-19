@@ -222,8 +222,9 @@ class AdminUserController extends Controller
     function edit($id)
     {
         $user = User::find($id);
-
-        return response()->json(['data' => $user, 200]); // 200 là mã lỗi
+        $html = "";
+        $html .= '';
+        return response()->json(['data' => $user], 200); // 200 là mã lỗi
     }
 
     function update()

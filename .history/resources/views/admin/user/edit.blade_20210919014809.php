@@ -45,7 +45,7 @@
                     <span class="text-danger" style="font-size:12px">(*)</span>
                 </div>
                 <div class="col-sm-10">
-                    {!! Form::email('email', '', ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email-edit', 'disabled' ]) !!}
+                    {!! Form::email('email', '', ['class' => 'form-control', 'placeholder' => 'Email', 'id' => 'email-edit' ]) !!}
                     @error('email_edit')
                         <span class="text-danger d-block mt-1" style="font-size: 13px">{{ $message }}</span>
                     @enderror
@@ -111,7 +111,7 @@
                     {!! Form::label('avatar', 'Avatar') !!}
                 </div>
                 <div class="col-sm-10">
-                    <input type="file" class="custom-file-input" accept="image/*" id="up-avatar" name="avatar-edit">
+                    <input type="file" class="custom-file-input" accept="image/*" id="up-avatar-edit" name="avatar-edit">
                     <label class="custom-file-label" for="avatar" style="margin: 0 15px">Chọn
                         file</label>
                     <img src="{{ asset('admin/images/user/150.png') }}" class="mt-2"

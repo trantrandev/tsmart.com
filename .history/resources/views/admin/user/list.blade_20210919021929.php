@@ -271,11 +271,7 @@
                             });
                             $('#phone-edit').val(response.data.phone);
                             $('#address-edit').val(response.data.address);
-
-                            // avatar
-                            if(response.data.avatar != null){
-                                $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
-                            }
+                            $('img#up-img').
                         },
                         error: function(error) {
 

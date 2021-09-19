@@ -265,17 +265,9 @@
                                 $('#status-edit option[value="inactive"]').attr('selected',
                                     'selected');
                             }
-                            // phone
-                            $(".phone").inputmask({
-                                mask: "9999-999-999"
-                            });
+                             
+                            alert(response.data.phone);
                             $('#phone-edit').val(response.data.phone);
-                            $('#address-edit').val(response.data.address);
-
-                            // avatar
-                            if(response.data.avatar != null){
-                                $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
-                            }
                         },
                         error: function(error) {
 

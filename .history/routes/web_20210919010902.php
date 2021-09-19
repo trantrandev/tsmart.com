@@ -31,16 +31,16 @@ Route::middleware('auth')->group(function(){
     // USER
     Route::GET('admin/user/list', [AdminUserController::class, 'list'])->name('user.list');
 
-    Route::GET('admin/user/add', [AdminUserController::class, 'add'])->name('user.add');
-    Route::POST('admin/user/store', [AdminUserController::class, 'store'])->name('user.store');
+    Route::GET('admin/user/add', [AdminUserController::class, 'add'])->name('user.ad');
+    Route::POST('admin/user/store', [AdminUserController::class, 'store'])->name('store_user');
 
-    Route::GET('admin/user/delete/{id}', [AdminUserController::class, 'delete'])->name('user.delete');
+    Route::GET('admin/user/delete/{id}', [AdminUserController::class, 'delete'])->name('delete_user');
 
-    Route::POST('admin/user/action', [AdminUserController::class, 'action'])->name('user.action');
+    Route::POST('admin/user/action', [AdminUserController::class, 'action'])->name('action_user');
 
-    Route::GET('admin/user/edit/{id}', [AdminUserController::class, 'edit'])->name('user.edit');
-    Route::GET('admin/user/update', [AdminUserController::class, 'update'])->name('user.update');
+    Route::GET('admin/user/edit', [AdminUserController::class, 'edit'])->name('edit_user');
+    Route::GET('admin/user/update', [AdminUserController::class, 'update'])->name('update_user');
 
-    Route::GET('admin/user/changeStatus', [AdminUserController::class, 'change_status'])->name('user.change_status');
+    Route::GET('admin/user/changeStatus', [AdminUserController::class, 'change_status'])->name('change_status_user');
 });
 

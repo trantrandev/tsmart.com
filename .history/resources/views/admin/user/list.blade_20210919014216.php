@@ -257,25 +257,7 @@
                                 $('#male-edit').removeAttr('checked');
                                 $('#female-edit').attr('checked', 'true');
                             }
-                            //select status
-                            if (response.data.status == "active") {
-                                $('#status-edit option[value="active"]').attr('selected',
-                                    'selected');
-                            } else {
-                                $('#status-edit option[value="inactive"]').attr('selected',
-                                    'selected');
-                            }
-                            // phone
-                            $(".phone").inputmask({
-                                mask: "9999-999-999"
-                            });
-                            $('#phone-edit').val(response.data.phone);
-                            $('#address-edit').val(response.data.address);
-
-                            // avatar
-                            if(response.data.avatar != null){
-                                $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
-                            }
+                            
                         },
                         error: function(error) {
 
