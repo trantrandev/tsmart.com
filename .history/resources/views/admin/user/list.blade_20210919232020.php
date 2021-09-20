@@ -171,7 +171,7 @@
     {{-- edit --}}
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
+    <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -288,7 +288,7 @@
 
                             // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
                             $('#form-edit').attr('data-url',
-                                '{{ URL::to('admin/user/update') }}/' +
+                                '{{ URL::to('user/update') }}/' +
                                 response.data.id)
                         },
                         error: function(error) {

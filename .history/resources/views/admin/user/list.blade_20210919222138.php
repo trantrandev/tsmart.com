@@ -171,13 +171,7 @@
     {{-- edit --}}
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    </script>
+
     <script>
         $(document).ready(function() {
             // fixed header for talbe
@@ -287,8 +281,7 @@
                             }
 
                             // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
-                            $('#form-edit').attr('data-url',
-                                '{{ URL::to('admin/user/update') }}/' +
+                            $('#form-edit').attr('data-url', '{{ asset('user/') }}/' +
                                 response.data.id)
                         },
                         error: function(error) {
@@ -306,27 +299,23 @@
                     var url = $(this).attr('data-url');
                     var data = {
                         name: $('#name-edit').val(),
-                        password: $('#password-edit').val(),
-                        confirm_password: $('#confirm-password-edit').val(),
-                        gender: $('input[name="gender"]:checked').val(),
-                        status: $('#status-edit').val(),
-                        phone: $('#phone-edit').val(),
-                        address: $('#address-edit').val(),
-
+                        password:$('#password-edit').val(),
+                        confirm_password:$('#confirm-password-edit').val(),
+                        gender:$('#gender-edit').val(),
+                        password:$('#password-edit').val(),
                     };
                     console.log(data);
+                    // $.ajax({
+                    //     type: 'put',
+                    //     url: url,
+                    //     data: data,
+                    //     success: function(response) {
 
-                    $.ajax({
-                        type: 'put',
-                        url: url,
-                        data: data,
-                        success: function(response) {
-                            alert('ok');
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            //xử lý lỗi tại đây
-                        }
-                    });
+                    //     },
+                    //     error: function(jqXHR, textStatus, errorThrown) {
+                    //         //xử lý lỗi tại đây
+                    //     }
+                    // });
                 });
             }
 

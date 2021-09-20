@@ -228,6 +228,8 @@ class AdminUserController extends Controller
 
     function update(Request $request)
     {
-
+        if ($request->hasFile('avatar-edit')) {
+            echo "3333";
+        }
     }
 }

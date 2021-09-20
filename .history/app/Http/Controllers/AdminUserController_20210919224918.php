@@ -228,6 +228,6 @@ class AdminUserController extends Controller
 
     function update(Request $request)
     {
-
+        dd($request->input());  
     }
 }

@@ -226,8 +226,7 @@ class AdminUserController extends Controller
         return response()->json(['data' => $user, 200]); // 200 là mã lỗi
     }
 
-    function update(Request $request)
+    function update()
     {
-
     }
 }

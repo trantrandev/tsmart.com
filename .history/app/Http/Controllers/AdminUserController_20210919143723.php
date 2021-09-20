@@ -224,10 +224,17 @@ class AdminUserController extends Controller
         $user = User::find($id);
 
         return response()->json(['data' => $user, 200]); // 200 là mã lỗi
+        /**
+         * ! sdfafdsfkdsfdsfskdfds
+         * ? dfsafsdfas
+         * TODO: dfds
+         * dsfafd
+         * dsfa
+         * 
+         */
     }
 
-    function update(Request $request)
+    function update()
     {
-
     }
 }

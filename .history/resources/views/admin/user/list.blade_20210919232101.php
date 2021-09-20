@@ -288,7 +288,7 @@
 
                             // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
                             $('#form-edit').attr('data-url',
-                                '{{ URL::to('admin/user/update') }}/' +
+                                '{{ URL::to('user/update') }}/' +
                                 response.data.id)
                         },
                         error: function(error) {

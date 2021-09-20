@@ -171,13 +171,7 @@
     {{-- edit --}}
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    </script>
+
     <script>
         $(document).ready(function() {
             // fixed header for talbe
@@ -282,13 +276,12 @@
                             // avatar
                             if (response.data.avatar != null) {
                                 $("img#up-img").attr('src',
-                                    '{{ URL::asset('admin/images/users') }}' + "/" +
+                                    '{{ URL::asset('admin/images/users/update') }}' + "/" +
                                     response.data.avatar);
                             }
 
                             // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
-                            $('#form-edit').attr('data-url',
-                                '{{ URL::to('admin/user/update') }}/' +
+                            $('#form-edit').attr('data-url', '{{ asset('user/') }}/' +
                                 response.data.id)
                         },
                         error: function(error) {

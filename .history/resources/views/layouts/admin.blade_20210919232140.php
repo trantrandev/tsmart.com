@@ -24,9 +24,7 @@
         <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
         {{-- toastr --}}
         <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
-
         <meta name="csrf-token" content="{{ csrf_token() }}">​
-
     @endif
     @yield('add_css')
     {{-- <script src="{{ asset('admin/js/jquery-3.6.0.js') }}"></script> --}}

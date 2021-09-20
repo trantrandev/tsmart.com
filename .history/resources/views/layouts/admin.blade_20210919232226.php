@@ -11,7 +11,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">​
     @hasSection('link_css')
         @yield('link_css')
     @else
@@ -24,8 +24,6 @@
         <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
         {{-- toastr --}}
         <link rel="stylesheet" href="{{ asset('admin/plugins/toastr/toastr.min.css') }}">
-
-        <meta name="csrf-token" content="{{ csrf_token() }}">​
 
     @endif
     @yield('add_css')

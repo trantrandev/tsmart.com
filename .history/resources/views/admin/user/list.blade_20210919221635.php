@@ -171,169 +171,162 @@
     {{-- edit --}}
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    </script>
+
     <script>
         $(document).ready(function() {
-            // fixed header for talbe
-            var table = $('#users-table').dataTable();
-            new $.fn.dataTable.FixedHeader(table);
+                // fixed header for talbe
+                var table = $('#users-table').dataTable();
+                new $.fn.dataTable.FixedHeader(table);
 
-            // Dùng để lấy action trên url
-            function getParameter(parameterName) {
-                let parameters = new URLSearchParams(window.location.search);
-                return parameters.get(parameterName);
-            }
+                // Dùng để lấy action trên url
+                function getParameter(parameterName) {
+                    let parameters = new URLSearchParams(window.location.search);
+                    return parameters.get(parameterName);
+                }
 
-            // change status
-            function change_status() {
-                $(document).on("change", 'table#users-table td.status input', function() {
-                    // get status
-                    var status = $(this).prop('checked') == true ? "active" : "inactive";
-                    var user_id = $(this).data('id');
-                    // lấy action là trash hay bình thường để lấy User bên controller
-                    var action = getParameter('status');
-                    var _this = $(this);
+                // change status
+                function change_status() {
+                    $(document).on("change", 'table#users-table td.status input', function() {
+                        // get status
+                        var status = $(this).prop('checked') == true ? "active" : "inactive";
+                        var user_id = $(this).data('id');
+                        // lấy action là trash hay bình thường để lấy User bên controller
+                        var action = getParameter('status');
+                        var _this = $(this);
 
-                    data = {
-                        status: status,
-                        user_id: user_id,
-                        action: action
-                    };
+                        data = {
+                            status: status,
+                            user_id: user_id,
+                            action: action
+                        };
 
-                    $.ajax({
-                        url: '{{ route('user.change_status') }}',
-                        type: 'GET',
-                        data: data, // Dữ liệu truyền lên Server
-                        dataType: 'JSON', // html, text, json
-                        success: function(response) {
-                            if (response.status == "true") {
+                        $.ajax({
+                            url: '{{ route('user.change_status') }}',
+                            type: 'GET',
+                            data: data, // Dữ liệu truyền lên Server
+                            dataType: 'JSON', // html, text, json
+                            success: function(response) {
+                                if (response.status == "true") {
 
-                                // display count number record
-                                $(".analytic a.active span").text(" (" + response.count[0] +
-                                    ") |");
-                                $(".analytic a.inactive span").text(" (" + response.count[1] +
-                                    ") |");
-                                $(".analytic a.trash span").text(" (" + response.count[2] +
-                                    ")");
+                                    // display count number record
+                                    $(".analytic a.active span").text(" (" + response.count[0] +
+                                        ") |");
+                                    $(".analytic a.inactive span").text(" (" + response.count[1] +
+                                        ") |");
+                                    $(".analytic a.trash span").text(" (" + response.count[2] +
+                                        ")");
 
-                                // Loại bỏ thẻ vừa thay đổi trạng thái, nếu là trash thì ko
-                                if (action != 'trash') {
-                                    _this.closest("tr").hide();
+                                    // Loại bỏ thẻ vừa thay đổi trạng thái, nếu là trash thì ko
+                                    if (action != 'trash') {
+                                        _this.closest("tr").hide();
+                                    }
+
+                                    // show status
+                                    toastr.options = {
+                                        // set time out
+                                        'timeOut': 2000
+                                    }
+                                    toastr['success']("Thay đổi trạng thái thành công",
+                                        'Trạng thái');
                                 }
-
-                                // show status
-                                toastr.options = {
-                                    // set time out
-                                    'timeOut': 2000
-                                }
-                                toastr['success']("Thay đổi trạng thái thành công",
-                                    'Trạng thái');
                             }
-                        }
+                        });
                     });
-                });
-            }
+                }
 
-            // show info edit
-            function edit() {
-                $(document).on("click", "button.btn-edit", function(e) {
-                    // Lấy url từ data-url kèm id bản ghi để dể controller lấy đc id
-                    var url = $(this).attr('data-url');
-                    // Đưa modal về mặc định
-                    e.preventDefault();
-                    $.ajax({
-                        //phương thức get
-                        type: 'get',
-                        url: url,
-                        success: function(response) {
-                            // ---- Xuất dữ liệu đưa lên modal ----
-                            $('#name-edit').val(response.data.name);
-                            $('#email-edit').val(response.data.email);
-                            // gender
-                            if (response.data.gender == "male") {
-                                // xóa checked đã check trước
-                                $('#female-edit').removeAttr('checked');
-                                $('#male-edit').attr('checked', 'true');
-                            } else {
-                                $('#male-edit').removeAttr('checked');
-                                $('#female-edit').attr('checked', 'true');
+                // show info edit
+                function edit() {
+                    $(document).on("click", "button.btn-edit", function(e) {
+                        // Lấy url từ data-url kèm id bản ghi để dể controller lấy đc id
+                        var url = $(this).attr('data-url');
+                        // Đưa modal về mặc định
+                        e.preventDefault();
+                        $.ajax({
+                            //phương thức get
+                            type: 'get',
+                            url: url,
+                            success: function(response) {
+                                // ---- Xuất dữ liệu đưa lên modal ----
+                                $('#name-edit').val(response.data.name);
+                                $('#email-edit').val(response.data.email);
+                                // gender
+                                if (response.data.gender == "male") {
+                                    // xóa checked đã check trước
+                                    $('#female-edit').removeAttr('checked');
+                                    $('#male-edit').attr('checked', 'true');
+                                } else {
+                                    $('#male-edit').removeAttr('checked');
+                                    $('#female-edit').attr('checked', 'true');
+                                }
+                                //select status
+                                if (response.data.status == "active") {
+                                    $('#status-edit option[value="active"]').attr('selected',
+                                        'selected');
+                                } else {
+                                    $('#status-edit option[value="inactive"]').attr('selected',
+                                        'selected');
+                                }
+                                // phone
+                                $(".phone").inputmask({
+                                    mask: "9999-999-999"
+                                });
+                                $('#phone-edit').val(response.data.phone);
+                                $('#address-edit').val(response.data.address);
+
+                                // avatar
+                                if (response.data.avatar != null) {
+                                    $("img#up-img").attr('src',
+                                        '{{ URL::asset('admin/images/users') }}' + "/" +
+                                        response.data.avatar);
+                                }
+
+                                // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
+                                $('#form-edit').attr('data-url', '{{ asset('user/') }}/' +
+                                    response.data.id)
+                            },
+                            error: function(error) {
+
                             }
-                            //select status
-                            if (response.data.status == "active") {
-                                $('#status-edit option[value="active"]').attr('selected',
-                                    'selected');
-                            } else {
-                                $('#status-edit option[value="inactive"]').attr('selected',
-                                    'selected');
-                            }
-                            // phone
-                            $(".phone").inputmask({
-                                mask: "9999-999-999"
-                            });
-                            $('#phone-edit').val(response.data.phone);
-                            $('#address-edit').val(response.data.address);
-
-                            // avatar
-                            if (response.data.avatar != null) {
-                                $("img#up-img").attr('src',
-                                    '{{ URL::asset('admin/images/users') }}' + "/" +
-                                    response.data.avatar);
-                            }
-
-                            // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
-                            $('#form-edit').attr('data-url',
-                                '{{ URL::to('admin/user/update') }}/' +
-                                response.data.id)
-                        },
-                        error: function(error) {
-
-                        }
+                        })
                     })
-                })
-            }
+                }
 
-            // update
-            function update() {
-                $('#form-edit').submit(function(e) {
-                    e.preventDefault();
-                    // get
-                    var url = $(this).attr('data-url');
-                    var data = {
-                        name: $('#name-edit').val(),
-                        password: $('#password-edit').val(),
-                        confirm_password: $('#confirm-password-edit').val(),
-                        gender: $('input[name="gender"]:checked').val(),
-                        status: $('#status-edit').val(),
-                        phone: $('#phone-edit').val(),
-                        address: $('#address-edit').val(),
-
-                    };
-                    console.log(data);
-
-                    $.ajax({
-                        type: 'put',
-                        url: url,
-                        data: data,
-                        success: function(response) {
-                            alert('ok');
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            //xử lý lỗi tại đây
-                        }
-                    });
+                // update
+                function update() {
+                    $('#form-edit').submit(function(e) {
+                        e.preventDefault();
+                        // get
+                        var url = $(this).attr('data-url');
+                        var data = {
+                            name:$('#name-edit').val();
+                        };
+                        consoel.log(data);
+                        $.ajax({
+                            type: 'put',
+                            url: url,
+                            data: data,
+                            success: function(response) {
+                                // console.log(response.studentid)
+                                toastr.success(response.message)
+                                $('#modal-edit').modal('hide');
+                                $('#hoten-' + response.studentid).text(response.student.hoten)
+                                $('#gioitinh-' + response.studentid).text(response.student.gioitinh)
+                                $('#ngaysinh-' + response.studentid).text(response.student.ngaysinh)
+                                $('#sdt-' + response.studentid).text(response.student.sdt)
+                                $('#diachi-' + response.studentid).text(response.student.diachi)
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                //xử lý lỗi tại đây
+                            }
+                        })
+                    })
                 });
-            }
+        }
 
-            // thực thi function
-            change_status();
-            edit();
-            update();
+        // thực thi function
+        change_status();
+        edit();
+        update();
 
         }); // END JQUERY
     </script>

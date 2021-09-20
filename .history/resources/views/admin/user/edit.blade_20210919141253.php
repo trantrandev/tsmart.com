@@ -2,7 +2,7 @@
     <div class="md-content">
         <h3 class="theme-bg2">Edit User</h3>
         <div>
-            {!! Form::open(['METHOD' => 'POST', 'files' => 'TRUE', 'id' => 'form-edit']) !!}
+            {!! Form::open(['METHOD' => 'POST', 'url' => 'admin/user/store', 'files' => 'TRUE']) !!}
             <div class="form-group row align-items-center">
                 <div class="col-sm-2">
                     {!! Form::label('name-edit', 'Name') !!}

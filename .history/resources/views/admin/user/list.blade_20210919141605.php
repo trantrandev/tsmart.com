@@ -171,13 +171,7 @@
     {{-- edit --}}
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-    </script>
+
     <script>
         $(document).ready(function() {
             // fixed header for talbe
@@ -240,10 +234,10 @@
                 });
             }
 
-            // show info edit
+            // edit
             function edit() {
                 $(document).on("click", "button.btn-edit", function(e) {
-                    // Lấy url từ data-url kèm id bản ghi để dể controller lấy đc id
+                    // Lấy url từ data-url để trỏ đến controller xử lý
                     var url = $(this).attr('data-url');
                     // Đưa modal về mặc định
                     e.preventDefault();
@@ -252,7 +246,6 @@
                         type: 'get',
                         url: url,
                         success: function(response) {
-                            // ---- Xuất dữ liệu đưa lên modal ----
                             $('#name-edit').val(response.data.name);
                             $('#email-edit').val(response.data.email);
                             // gender
@@ -280,16 +273,11 @@
                             $('#address-edit').val(response.data.address);
 
                             // avatar
-                            if (response.data.avatar != null) {
-                                $("img#up-img").attr('src',
-                                    '{{ URL::asset('admin/images/users') }}' + "/" +
-                                    response.data.avatar);
+                            if(response.data.avatar != null){
+                                $("img#up-img").attr('src', '{{ URL::asset("admin/images/users") }}'+"/"+response.data.avatar);
                             }
 
-                            // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
-                            $('#form-edit').attr('data-url',
-                                '{{ URL::to('admin/user/update') }}/' +
-                                response.data.id)
+                            // Thêm 
                         },
                         error: function(error) {
 
@@ -298,42 +286,9 @@
                 })
             }
 
-            // update
-            function update() {
-                $('#form-edit').submit(function(e) {
-                    e.preventDefault();
-                    // get
-                    var url = $(this).attr('data-url');
-                    var data = {
-                        name: $('#name-edit').val(),
-                        password: $('#password-edit').val(),
-                        confirm_password: $('#confirm-password-edit').val(),
-                        gender: $('input[name="gender"]:checked').val(),
-                        status: $('#status-edit').val(),
-                        phone: $('#phone-edit').val(),
-                        address: $('#address-edit').val(),
-
-                    };
-                    console.log(data);
-
-                    $.ajax({
-                        type: 'put',
-                        url: url,
-                        data: data,
-                        success: function(response) {
-                            alert('ok');
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            //xử lý lỗi tại đây
-                        }
-                    });
-                });
-            }
-
             // thực thi function
             change_status();
             edit();
-            update();
 
         }); // END JQUERY
     </script>
