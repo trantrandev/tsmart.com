@@ -121,7 +121,8 @@
                                                                 <button
                                                                     class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
                                                                     type="button" data-modal="modal-edit-user"
-                                                                    data-url="{{ route('user.edit', $user->id) }}">
+                                                                    data-url="{{ route('user.edit', $user->id) }}"
+                                                                    data-id="{{ $user->id }}">
                                                                     <i class="feather icon-edit f-16  text-c-green"></i>
                                                                 </button>
 
@@ -213,7 +214,6 @@
                         dataType: 'JSON', // html, text, json
                         success: function(response) {
                             if (response.status == "true") {
-
                                 // display count number record
                                 $(".analytic a.active span").text(" (" + response.count[0] +
                                     ") |");
@@ -245,12 +245,32 @@
                 $(document).on("click", "button.btn-edit", function(e) {
                     // Lấy url từ data-url kèm id bản ghi để dể controller lấy đc id
                     var url = $(this).attr('data-url');
+                    // lấy action để biết nếu đang ở trạng thái trash thì show dl theo trash
+                    var action = getParameter('status');
+                    var data = {
+                        action: action
+                    };
+                    // Lấy thông tin user đang login để disable trạng thái
+                    var user_login = {!! Auth()->user() !!};
+                    // Lấy id có trong view list
+                    var id = $(this).data('id');
                     // Đưa modal về mặc định
                     e.preventDefault();
                     $.ajax({
                         //phương thức get
                         type: 'get',
                         url: url,
+                        data: data,
+                        beforeSend: function() {
+                            // Nếu cái status có id edit == id đăng nhập thì disable nó
+                            if (user_login['id'] == id) {
+                                $('select#status-edit').attr('disabled', 'disabled')
+                            }
+                            // Làm mới lại modal mỗi lần load lên
+                            $('#form-edit').find('span.error-text').text('');
+                            $('#form-edit').trigger('reset');
+                            $('.file-avatar label.custom-file-label').text('Chọn file');
+                        },
                         success: function(response) {
                             // ---- Xuất dữ liệu đưa lên modal ----
                             $('#name-edit').val(response.data.name);
@@ -279,11 +299,14 @@
                             $('#phone-edit').val(response.data.phone);
                             $('#address-edit').val(response.data.address);
 
-                            // avatar
+                            // avatar: Nếu có avatar thì hiển thị ra :  hình thì mặc định
                             if (response.data.avatar != null) {
                                 $("img#up-img").attr('src',
                                     '{{ URL::asset('admin/images/users') }}' + "/" +
                                     response.data.avatar);
+                            } else {
+                                $("img#up-img").attr('src',
+                                    '{{ URL::asset('admin/images/user/150.png') }}');
                             }
 
                             // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
@@ -300,28 +323,53 @@
 
             // update
             function update() {
-                $('#form-edit').submit(function(e) {
+                $(document).on('submit', '#form-edit', function(e) {
                     e.preventDefault();
                     // get
+                    var form = this;
                     var url = $(this).attr('data-url');
-                    var data = {
-                        name: $('#name-edit').val(),
-                        password: $('#password-edit').val(),
-                        confirm_password: $('#confirm-password-edit').val(),
-                        gender: $('input[name="gender"]:checked').val(),
-                        status: $('#status-edit').val(),
-                        phone: $('#phone-edit').val(),
-                        address: $('#address-edit').val(),
+                    var status_url = getParameter('status');
 
-                    };
-                    console.log(data);
+                    var form_data = new FormData(form);
+                    // Gửi trạng thái hiện tại trên url là trash hay gì để lấy dữ liệu ra
+                    form_data.append('status_url', status_url);
+
+                    // Lấy thông tin user đang login gửi status cho controller để có giá trị
+                    // vì khi gửi qua formData thì trường bị disable sẽ ko lấy đc giá trị
+                    var user_login = {!! Auth()->user() !!};
+                    // Lấy id có trong view list
+                    var id = $('button.btn-edit').data('id');
+                    // Nếu cái status có id edit == id đăng nhập add giá trị cũ cho nó để gửi đi
+                    if (user_login['id'] == id) {
+                        form_data.append('status_edit', 'active');
+                    }
 
                     $.ajax({
-                        type: 'put',
+                        type: 'POST',
                         url: url,
-                        data: data,
+                        data: form_data,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        // Trước khi gửi loại những error validator ra
+                        beforeSend: function() {
+                            $(form).find('span.error-text').text('');
+                        },
                         success: function(response) {
-                            alert('ok');
+                            if (response.code == 0) {
+                                // Mỗi trường lỗi từ response sẽ ứng với class error bên form: class = name_edit_error => xuất lỗi ra
+                                $.each(response.error, function(prefix, val) {
+                                    $(form).find('span.' + prefix + '_error').text(val[
+                                        0]);
+                                });
+                            } else {
+                                if (response.code == 1) {
+                                    console.log(response.data);
+                                }
+                                $(form).trigger('reset');
+
+                            }
+
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             //xử lý lỗi tại đây

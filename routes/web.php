@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function(){
     Route::POST('admin/user/action', [AdminUserController::class, 'action'])->name('user.action');
 
     Route::GET('admin/user/edit/{id}', [AdminUserController::class, 'edit'])->name('user.edit');
-    Route::PUT('admin/user/update/{id}', [AdminUserController::class, 'update'])->name('user.update');
+    Route::POST('admin/user/update/{id}', [AdminUserController::class, 'update'])->name('user.update');
 
     Route::GET('admin/user/changeStatus', [AdminUserController::class, 'change_status'])->name('user.change_status');
 });

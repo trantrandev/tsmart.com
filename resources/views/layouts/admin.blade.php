@@ -157,8 +157,14 @@
                         <div class="dropdown-menu dropdown-menu-right profile-notification">
                             <div class="pro-head">
                                 {{-- Images avatar --}}
-                                <img src="{{ asset('') }}admin/images/user/avatar-1.jpg" class="img-radius"
-                                    alt="User-Profile-Image">
+                                @if (Auth::user()->avatar == null)
+                                    <img src="{{ asset(show_string_avatar(Auth::user()->gender)) }}" class="img-radius"
+                                        alt="User-Profile-Image">
+                                @else
+                                <img src="{{ asset('admin/images/users/' . Auth::user()->avatar) }}" class="img-radius"
+                                alt="User-Profile-Image">
+                                @endif
+
                                 <span>{{ Auth::user()->name }}
                                     <form action="{{ route('logout') }}" method="POST">
                                         @csrf

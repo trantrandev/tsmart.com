@@ -22,6 +22,7 @@ class AdminUserController extends Controller
             'inactive' => 'Vô hiệu hóa',
             'delete' => 'Xóa tạm thời',
         ];
+
         if ($status == "trash") {
             // Trong trạng thái thùng rác thì action:
             $list_act = [
