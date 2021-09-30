@@ -1,4 +1,19 @@
 <?php
+if (!function_exists('redirect_follow_status')) {
+    function redirect_follow_status($arr_status, $link_redirect)
+    {
+        if (in_array('active', $arr_status)) {
+            return $link_redirect . '?status=active';
+        } else if (in_array('inactive', $arr_status)) {
+            return $link_redirect . '?status=inactive';
+        } else if (in_array('trash', $arr_status)) {
+            return $link_redirect . '?status=trash';
+        } else {
+            return $link_redirect . '?status=active';
+        }
+    }
+}
+
 if (!function_exists('show_status_bg')) {
     function show_status_bg($status)
     {
@@ -98,9 +113,10 @@ if (!function_exists('show_status_user_1')) {
 }
 
 if (!function_exists('show_status_user_current')) {
-    function show_status_user_current($id) {
-            return '<div class="switch switch-success d-inline m-r-10">
-            <input type="checkbox" id="switch-s-' . $id . '" checked disabled data-id="'.$id.'">
+    function show_status_user_current($id)
+    {
+        return '<div class="switch switch-success d-inline m-r-10">
+            <input type="checkbox" id="switch-s-' . $id . '" checked disabled data-id="' . $id . '">
             <label for="switch-s-' . $id . '" class="cr"></label>
             </div>';
     }
@@ -112,12 +128,12 @@ if (!function_exists('show_status_user')) {
         $array_data = array(
             'active' =>
             '<div class="switch switch-success d-inline m-r-10">
-            <input type="checkbox" id="switch-s-' . $id . '" checked data-id="'.$id.'">
+            <input type="checkbox" id="switch-s-' . $id . '" checked data-id="' . $id . '">
             <label for="switch-s-' . $id . '" class="cr"></label>
             </div>',
             'inactive' =>
             '<div class="switch switch-success d-inline m-r-10">
-            <input type="checkbox" id="switch-s-' . $id . '" data-id="'.$id.'">
+            <input type="checkbox" id="switch-s-' . $id . '" data-id="' . $id . '">
             <label for="switch-s-' . $id . '" class="cr"></label>
             </div>'
 

@@ -132,10 +132,25 @@ class AdminUserController extends Controller
 
         // * Nếu đang trash thì xóa user trash
         if (in_array('trash', $get_status_url)) {
+            // get name file was upload in database
+            $name_image = User::select('avatar')->withTrashed()->find($id);
+
+            // Tiến hành xóa
             $user = User::withTrashed()->find($id)->forceDelete();
+
+            // ! Loại bỏ ảnh cũ
+            // * Chỉ loại bỏ khi avatar trong database != null
+            if ($name_image->avatar != null) {
+                // get path folder
+                $image_path = public_path('admin/images/users/');
+                // check nếu đúng file thì loại nó ra khỏi local
+                if (File::exists($image_path . $name_image->avatar)) {
+                    unlink($image_path . $name_image->avatar);
+                }
+            }
             // Thông báo
             Toastr::success('Bạn đã xóa vĩnh viễn bản ghi khỏi hệ thống', 'Xóa vĩnh viễn');
-            return redirect('admin/user/list');
+            return redirect('admin/user/list?status=trash');
         } else {
             if (Auth::id() != $id) {
                 $user = User::find($id);
@@ -160,62 +175,85 @@ class AdminUserController extends Controller
 
     function action(Request $request)
     {
+        // ! lấy url trước đó xem trạng thái nó đang trash hay gì
+        $url = url()->previous();
+        $get_status_url = explode('?status=', $url);
+
         $list_check = $request->input('list_check');
 
         if ($list_check) {
-            //Check Nếu id đăng nhập nằm trong mảng chọn thì bỏ ra
-            foreach ($list_check as $k => $id) {
-                if (Auth::id() == $id) {
-                    unset($list_check[$k]);
+            // ! Nếu có chọn action
+            if ($request->input('act')) {
+                //Check Nếu id đăng nhập nằm trong mảng chọn thì bỏ ra
+                foreach ($list_check as $k => $id) {
+                    if (Auth::id() == $id) {
+                        unset($list_check[$k]);
+                    }
                 }
+
+                // Loại ra nếu còn list check thì xử lý tiếp
+                if (!empty($list_check)) {
+                    // Check action
+                    $act = $request->input('act');
+                    if ($act == "inactive") {
+                        User::whereIn('id', $list_check)
+                            ->update(array('status' => 'inactive'));
+                        Toastr::success('Vô hiệu hóa thành công', 'Trạng thái');
+                        return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
+                    }
+
+                    if ($act == "active") {
+                        User::whereIn('id', $list_check)
+                            ->update(array('status' => 'active'));
+                        Toastr::success('Kích hoạt thành công', 'Trạng thái');
+                        return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
+                    }
+
+                    if ($act == "delete") {
+                        User::destroy($list_check);
+                        Toastr::success('Bạn đã xóa thành công', 'Xóa bản ghi');
+                        return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
+                    }
+
+                    if ($act == "restore") {
+                        User::withTrashed()
+                            // Id thuộc list check
+                            ->whereIn('id', $list_check)
+                            ->restore();
+                        Toastr::success('Bạn đã khôi phục thành công', 'Khôi phục bản ghi');
+                        return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
+                    }
+
+                    if ($act == "forceDelete") {
+                        $name_avatar = User::select('avatar')->withTrashed()->whereIn('id', $list_check)->get();
+                        foreach ($name_avatar as $item) {
+                            if ($item->avatar != null) {
+                                // get path folder
+                                $image_path = public_path('admin/images/users/');
+                                // check nếu đúng file thì loại nó ra khỏi local
+                                if (File::exists($image_path . $item->avatar)) {
+                                    unlink($image_path . $item->avatar);
+                                }
+                            }
+                        }
+                        User::withTrashed()
+                            ->whereIn('id', $list_check)
+                            ->forceDelete();
+
+                        Toastr::success('Bạn đã xóa vĩnh viễn bản ghi khỏi hệ thống', 'Xóa vĩnh viễn');
+                        return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
+                    }
+                } else {
+                    Toastr::warning('Bạn không thể thao tác trên tài khoản của bạn', 'Cảnh báo');
+                    return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
+                }
+            } else {
+                Toastr::warning('Bạn cần chọn phần tử thực thi', 'Cảnh báo');
+                return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
             }
-
-            // Loại ra nếu còn list check thì xử lý tiếp
-            if (!empty($list_check)) {
-                // Check action
-                $act = $request->input('act');
-                if ($act == "inactive") {
-                    User::whereIn('id', $list_check)
-                        ->update(array('status' => 'inactive'));
-                    Toastr::success('Vô hiệu hóa thành công', 'Trạng thái');
-                    return redirect('admin/user/list');
-                }
-
-                if ($act == "active") {
-                    User::whereIn('id', $list_check)
-                        ->update(array('status' => 'active'));
-                    Toastr::success('Kích hoạt thành công', 'Trạng thái');
-                    return redirect('admin/user/list');
-                }
-
-                if ($act == "delete") {
-                    User::destroy($list_check);
-                    Toastr::success('Bạn đã xóa thành công', 'Xóa bản ghi');
-                    return redirect('admin/user/list');
-                }
-
-                if ($act == "restore") {
-                    User::withTrashed()
-                        // Id thuộc list check
-                        ->whereIn('id', $list_check)
-                        ->restore();
-                    Toastr::success('Bạn đã khôi phục thành công', 'Khôi phục bản ghi');
-                    return redirect('admin/user/list');
-                }
-
-                if ($act == "forceDelete") {
-                    User::withTrashed()
-                        ->whereIn('id', $list_check)
-                        ->forceDelete();
-                    Toastr::success('Bạn đã xóa vĩnh viễn bản ghi khỏi hệ thống', 'Xóa vĩnh viễn');
-                    return redirect('admin/user/list');
-                }
-            }
-            Toastr::warning('Bạn không thể thao tác trên tài khoản của bạn', 'Cảnh báo');
-            return redirect('admin/user/list');
         } else {
             Toastr::warning('Bạn cần chọn phần tử thực thi', 'Cảnh báo');
-            return redirect('admin/user/list');
+            return redirect(redirect_follow_status($get_status_url, 'admin/user/list'));
         }
     }
 
