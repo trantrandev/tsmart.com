@@ -126,16 +126,35 @@ class AdminUserController extends Controller
 
     function delete($id)
     {
-        if (Auth::id() != $id) {
-            $user = User::find($id);
-            $user->delete();
+        // ! lấy url trước đó xem trạng thái nó đang trash hay gì
+        $url = url()->previous();
+        $get_status_url = explode('?status=', $url);
 
+        // * Nếu đang trash thì xóa user trash
+        if (in_array('trash', $get_status_url)) {
+            $user = User::withTrashed()->find($id)->forceDelete();
             // Thông báo
-            Toastr::success('Xóa tài khoản thành công', 'Xóa tài khoản');
+            Toastr::success('Bạn đã xóa vĩnh viễn bản ghi khỏi hệ thống', 'Xóa vĩnh viễn');
             return redirect('admin/user/list');
         } else {
-            Toastr::warning('Bạn không thể tự xóa mình ra khỏi hệ thống', 'Cảnh báo');
-            return redirect('admin/user/list');
+            if (Auth::id() != $id) {
+                $user = User::find($id);
+                $user->delete();
+
+                // !Kiểm tra status trên url nó ở trạng thái nào thì redirect về đó
+                if (in_array('inactive', $get_status_url)) {
+                    // Thông báo
+                    Toastr::success('Xóa tài khoản thành công', 'Xóa tài khoản');
+                    return redirect('admin/user/list?status=inactive');
+                } else {
+                    // Thông báo
+                    Toastr::success('Xóa tài khoản thành công', 'Xóa tài khoản');
+                    return redirect('admin/user/list');
+                }
+            } else {
+                Toastr::warning('Bạn không thể tự xóa mình ra khỏi hệ thống', 'Cảnh báo');
+                return redirect('admin/user/list');
+            }
         }
     }
 
@@ -158,14 +177,14 @@ class AdminUserController extends Controller
                 if ($act == "inactive") {
                     User::whereIn('id', $list_check)
                         ->update(array('status' => 'inactive'));
-                    Toastr::success('Vô hiệu hóa thành công', 'Kích hoạt');
+                    Toastr::success('Vô hiệu hóa thành công', 'Trạng thái');
                     return redirect('admin/user/list');
                 }
 
                 if ($act == "active") {
                     User::whereIn('id', $list_check)
                         ->update(array('status' => 'active'));
-                    Toastr::success('Kích hoạt thành công', 'Kích hoạt');
+                    Toastr::success('Kích hoạt thành công', 'Trạng thái');
                     return redirect('admin/user/list');
                 }
 
@@ -354,7 +373,95 @@ class AdminUserController extends Controller
             $data->address = ($request->address_edit);
 
             $data->update();
-            return response()->json(['code' => 1, 'data' => $data]);
+
+            // !lấy dữ liệu sau khi update
+            if ($request->input('status_url') == 'trash') {
+                $data_user = User::withTrashed()->find($id);
+            } else {
+                $data_user = User::find($id);
+            }
+
+
+            // ! kiểm tra nếu dữ status ở trạng thái giống trên url thì load html cho nó, ko thì ẩn thôi vì chuyển các trạng thái không có sài ajax nên nó tự cập nhật
+            if ($request->status_url == 'trash') {
+                // * reload dữ liệu của nó
+                $html = '';
+                $html .= '<td class="check"><input type="checkbox" name="list_check[]" value="' . $id . '"></td>';
+                $html .= '<td><b>' . $request->stt . '</b></td>';
+                if ($data_user->avatar != null) {
+                    $html .= '<td><img style="width: 50px" src="' . asset('admin/images/users/' . $data_user->avatar) . '" alt="img avatar"></td>';
+                } else {
+                    $html .= '<td><img style="width: 50px" src="' . asset(show_string_avatar($data_user->gender)) . '" alt="img avatar"></td>';
+                }
+                $html .= '<td>' . $data_user->name . '</td>';
+                $html .= '<td>' . $data_user->email . '</td>';
+                $html .= '<td>' . $data_user->created_at . '</td>';
+                $html .= '<td class="status">';
+                if (Auth::id() == $data_user->id) {
+                    $html .= show_status_user_current($data_user->id);
+                } else {
+                    $html .= show_status_user($data_user->status, $data_user->id);
+                }
+                $html .= '</td>';
+                $html .= '<td><button
+                class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
+                type="button" data-modal="modal-edit-user"
+                data-url="' . route('user.edit', $data_user->id) . '"
+                data-id="' . $data_user->id . '"
+                data-stt="' . $request->stt . '">
+                <i class="feather icon-edit f-16  text-c-green"></i></button> ';
+
+                if (Auth::id() != $data_user->id) {
+                    $html .= '<a class="btn btn-danger btn-sm btn-action btn-delete"
+                    href="' . route('user.delete', $data_user->id) . '"
+                    onclick="return confirm(\'Bạn có chắc chắn muốn xóa tài khoản này?\')">
+                    <i class="feather icon-trash-2 f-16 text-c-red"></i></a>';
+                }
+                $html .= '</td>';
+            } else {
+                if ($data_user->status == $request->status_url) {
+                    // * reload dữ liệu của nó
+                    $html = '';
+                    $html .= '<td class="check"><input type="checkbox" name="list_check[]" value="' . $id . '"></td>';
+                    $html .= '<td><b>' . $request->stt . '</b></td>';
+                    if ($data_user->avatar != null) {
+                        $html .= '<td><img style="width: 50px" src="' . asset('admin/images/users/' . $data_user->avatar) . '" alt="img avatar"></td>';
+                    } else {
+                        $html .= '<td><img style="width: 50px" src="' . asset(show_string_avatar($data_user->gender)) . '" alt="img avatar"></td>';
+                    }
+                    $html .= '<td>' . $data_user->name . '</td>';
+                    $html .= '<td>' . $data_user->email . '</td>';
+                    $html .= '<td>' . $data_user->created_at . '</td>';
+                    $html .= '<td class="status">';
+                    if (Auth::id() == $data_user->id) {
+                        $html .= show_status_user_current($data_user->id);
+                    } else {
+                        $html .= show_status_user($data_user->status, $data_user->id);
+                    }
+                    $html .= '</td>';
+                    $html .= '<td><button
+                class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
+                type="button" data-modal="modal-edit-user"
+                data-url="' . route('user.edit', $data_user->id) . '"
+                data-id="' . $data_user->id . '"
+                data-stt="' . $request->stt . '">
+                <i class="feather icon-edit f-16  text-c-green"></i></button> ';
+
+                    if (Auth::id() != $data_user->id) {
+                        $html .= '<a class="btn btn-danger btn-sm btn-action btn-delete"
+                    href="' . route('user.delete', $data_user->id) . '"
+                    onclick="return confirm(\'Bạn có chắc chắn muốn xóa tài khoản này?\')">
+                    <i class="feather icon-trash-2 f-16 text-c-red"></i></a>';
+                    }
+                    $html .= '</td>';
+                } else {
+                    // * để bên kia ẩn nó khi nó không cần reload mất công
+                    $html = '';
+                }
+            }
+
+
+            return response()->json(['code' => 1, 'html' => $html, 'id' => $id]);
         }
     }
 }

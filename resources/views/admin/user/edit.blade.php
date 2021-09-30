@@ -1,4 +1,4 @@
-<div class="md-modal md-effect-7 scroll-div modal-edit-user" id="modal-edit-user">
+<div class="md-modal md-effect-7 scroll-div" id="modal-edit-user">
     <div class="md-content">
         <h3 class="theme-bg2">Edit User</h3>
         <div>
@@ -124,10 +124,12 @@
         </div>
     </div>
 </div>
+{{-- màng chắn --}}
 <div class="md-overlay"></div>
 <script>
     $(document).ready(function() {
-        new PerfectScrollbar('.modal-edit-user.scroll-div', {
+        // sử dụng function trong vendor-all.min.js
+        new PerfectScrollbar('#modal-edit-user.scroll-div', {
             wheelSpeed: .5,
             swipeEasing: 0,
             suppressScrollX: !0,

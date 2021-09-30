@@ -88,7 +88,7 @@
                                                     @endphp
 
                                                     @foreach ($users as $user)
-                                                        <tr>
+                                                        <tr id="item-{{ $user->id }}">
                                                             <td class="check"><input type="checkbox"
                                                                     name="list_check[]" value="{{ $user->id }}"></td>
                                                             @php
@@ -122,14 +122,15 @@
                                                                     class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
                                                                     type="button" data-modal="modal-edit-user"
                                                                     data-url="{{ route('user.edit', $user->id) }}"
-                                                                    data-id="{{ $user->id }}">
+                                                                    data-id="{{ $user->id }}"
+                                                                    data-stt="{{ $t }}">
                                                                     <i class="feather icon-edit f-16  text-c-green"></i>
                                                                 </button>
 
                                                                 @if (Auth::id() != $user->id)
                                                                     <a class="btn btn-danger btn-sm btn-action btn-delete"
                                                                         href="{{ route('user.delete', $user->id) }}"
-                                                                        onclick="return confirm('Bạn có chắc chắc muốn xóa tài khoản này?')">
+                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
                                                                         <i class="feather icon-trash-2 f-16 text-c-red"></i>
                                                                     </a>
                                                                 @endif
@@ -137,18 +138,6 @@
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th><input type="checkbox" name="checkall"></th>
-                                                        <th>STT</th>
-                                                        <th>Avatar</th>
-                                                        <th>Name</th>
-                                                        <th>Email</th>
-                                                        <th>Created date</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </tfoot>
                                             </table>
                                     </form>
                                 </div>{{-- ENd card block --}}
@@ -172,13 +161,13 @@
     {{-- edit --}}
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
-    <script type="text/javascript" charset="utf-8">
+    {{-- <script type="text/javascript" charset="utf-8">
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    </script>
+    </script> --}}
     <script>
         $(document).ready(function() {
             // fixed header for talbe
@@ -243,6 +232,10 @@
             // show info edit
             function edit() {
                 $(document).on("click", "button.btn-edit", function(e) {
+                    // Đưa modal về mặc định
+                    e.preventDefault();
+                    // Phải thêm class md-show này vô vì khi update đã bị xóa
+                    $('#modal-edit-user').addClass('md-show');
                     // Lấy url từ data-url kèm id bản ghi để dể controller lấy đc id
                     var url = $(this).attr('data-url');
                     // lấy action để biết nếu đang ở trạng thái trash thì show dl theo trash
@@ -250,12 +243,13 @@
                     var data = {
                         action: action
                     };
+
                     // Lấy thông tin user đang login để disable trạng thái
                     var user_login = {!! Auth()->user() !!};
                     // Lấy id có trong view list
                     var id = $(this).data('id');
-                    // Đưa modal về mặc định
-                    e.preventDefault();
+                    var stt = $(this).data('stt');
+
                     $.ajax({
                         //phương thức get
                         type: 'get',
@@ -264,7 +258,9 @@
                         beforeSend: function() {
                             // Nếu cái status có id edit == id đăng nhập thì disable nó
                             if (user_login['id'] == id) {
-                                $('select#status-edit').attr('disabled', 'disabled')
+                                $('select#status-edit').attr('disabled', 'disabled');
+                            } else {
+                                $('select#status-edit').removeAttr('disabled');
                             }
                             // Làm mới lại modal mỗi lần load lên
                             $('#form-edit').find('span.error-text').text('');
@@ -312,7 +308,10 @@
                             // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên
                             $('#form-edit').attr('data-url',
                                 '{{ URL::to('admin/user/update') }}/' +
-                                response.data.id)
+                                response.data.id);
+                            $('#form-edit').attr('data-id',
+                                response.data.id);
+                            $('#form-edit').attr('data-stt', stt);
                         },
                         error: function(error) {
 
@@ -333,15 +332,18 @@
                     var form_data = new FormData(form);
                     // Gửi trạng thái hiện tại trên url là trash hay gì để lấy dữ liệu ra
                     form_data.append('status_url', status_url);
+                    var stt = $(form).data('stt');
+                    form_data.append('stt', stt);
 
                     // Lấy thông tin user đang login gửi status cho controller để có giá trị
                     // vì khi gửi qua formData thì trường bị disable sẽ ko lấy đc giá trị
                     var user_login = {!! Auth()->user() !!};
-                    // Lấy id có trong view list
-                    var id = $('button.btn-edit').data('id');
+                    // Lấy id trong form để so sánh
+                    var id = $(form).data('id');
                     // Nếu cái status có id edit == id đăng nhập add giá trị cũ cho nó để gửi đi
                     if (user_login['id'] == id) {
-                        form_data.append('status_edit', 'active');
+                        var active = 'active';
+                        form_data.append('status_edit', active);
                     }
 
                     $.ajax({
@@ -364,10 +366,23 @@
                                 });
                             } else {
                                 if (response.code == 1) {
-                                    console.log(response.data);
+                                    if(response.html != '')  {
+                                        $('tr#item-' + response.id).html(response.html);
+                                    }else {
+                                        $('tr#item-' + response.id).hide();
+                                    }
                                 }
+                                // reset form
                                 $(form).trigger('reset');
-
+                                // Đóng modal
+                                $('#modal-edit-user').removeClass('md-show');
+                                // show status
+                                toastr.options = {
+                                    // set time out
+                                    'timeOut': 2000
+                                }
+                                toastr['success']("Cập nhật bản ghi thành công",
+                                    'Cập nhật');
                             }
 
                         },
@@ -375,6 +390,7 @@
                             //xử lý lỗi tại đây
                         }
                     });
+
                 });
             }
 

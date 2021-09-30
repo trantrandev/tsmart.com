@@ -13082,6 +13082,6 @@ li.nav-item.pcoded-trigger i.arrow {
 
 /* modal Edit user */
 
-.modal-edit-user.scroll-div {
+#modal-edit-user.scroll-div {
     height: calc(100vh);
 }
