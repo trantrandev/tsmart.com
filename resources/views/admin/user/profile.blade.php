@@ -35,12 +35,19 @@
                                                 <div class="card-body pb-0">
                                                     <div class="media user-about-block align-items-center mt-0 mb-3">
                                                         <div class="position-relative d-inline-block">
-                                                            <img class="img-radius img-fluid wid-80"
-                                                                src="{{ asset('admin/images/users/1632968990-Trân Trân.jpg') }}"
-                                                                alt="User image">
+                                                            @if ($user->avatar != null)
+                                                                <img class="img-radius img-fluid wid-80"
+                                                                    src="{{ asset('admin/images/users/' . $user->avatar) }}"
+                                                                    alt="User image">
+                                                            @else
+                                                                <img class="img-radius img-fluid wid-80"
+                                                                    src="{{ asset(show_string_avatar($user->gender)) }}"
+                                                                    alt="User image">
+                                                            @endif
                                                         </div>
+
                                                         <div class="media-body ml-3">
-                                                            <h6 class="mb-1">Trantran</h6>
+                                                            <h6 class="mb-1">{{ $user->name }}</h6>
                                                             <p class="mb-0 text-muted">Administrator</p>
                                                         </div>
                                                     </div>
@@ -49,17 +56,18 @@
                                                     <li class="list-group-item">
                                                         <span class="f-w-500"><i
                                                                 class="feather icon-mail m-r-10"></i>Email</span>
-                                                        <span class="text-body float-right">trantran12c@gmail.com</span>
+                                                        <span class="text-body float-right">{{ $user->email }}</span>
                                                     </li>
                                                     <li class="list-group-item">
                                                         <span class="f-w-500"><i
                                                                 class="feather icon-phone-call m-r-10"></i>Phone</span>
-                                                        <span class="float-right text-body">033 6313 347</span>
+                                                        <span
+                                                            class="float-right text-body">{{ show_phone_number($user->phone) }}</span>
                                                     </li>
                                                     <li class="list-group-item border-bottom-0">
                                                         <span class="f-w-500"><i
                                                                 class="feather icon-map-pin m-r-10"></i>Address</span>
-                                                        <span class="float-right">Hòn Đất - Kiên Giang</span>
+                                                        <span class="float-right">{{ $user->address }}</span>
                                                     </li>
                                                 </ul>
 
@@ -97,13 +105,14 @@
                                                 <div class="tab-pane fade show active" id="user-set-information"
                                                     role="tabpanel" aria-labelledby="user-set-information-tab">
                                                     <div class="card">
-                                                        <form action="updateProfile" method="POST">
+                                                        <form action="updateProfile" method="POST" accept-charset="UTF-8"
+                                                            enctype="multipart/form-data">
                                                             @csrf
                                                             <section>
                                                                 <div class="card-header">
-                                                                    <h5><i
-                                                                            class="feather icon-user text-c-blue wid-20"></i><span
-                                                                            class="p-l-5">Personal
+                                                                    <h5>
+                                                                        <i class="feather icon-user text-c-blue wid-20"></i>
+                                                                        <span class="p-l-5">Personal
                                                                             Information</span>
                                                                     </h5>
                                                                 </div>
@@ -115,17 +124,27 @@
                                                                                     for="name">Name
                                                                                     <span
                                                                                         class="text-danger">*</span></label>
-                                                                                <input type="text" class="form-control" name="name"
-                                                                                    id="name" value="Trần trân">
+                                                                                <input type="text" class="form-control"
+                                                                                    name="name" id="name"
+                                                                                    value="{{ $user->name }}">
+                                                                                @error('name')
+                                                                                    <span class="text-danger d-block mt-1"
+                                                                                        style="font-size: 13px">{{ $message }}</span>
+                                                                                @enderror
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-sm-6">
                                                                             <div class="form-group">
                                                                                 <label class="form-label">Gender <span
                                                                                         class="text-danger">*</span></label>
-                                                                                <select class="form-control" name="gender">
-                                                                                    <option value="male">Male</option>
-                                                                                    <option value="female">Female</option>
+                                                                                <select class="form-control"
+                                                                                    name="gender">
+                                                                                    <option
+                                                                                        {{ $user->gender == 'male' ? 'selected' : '' }}
+                                                                                        value="male">Male</option>
+                                                                                    <option
+                                                                                        {{ $user->gender == 'female' ? 'selected' : '' }}
+                                                                                        value="female">Female</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -146,14 +165,21 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-sm-6">
-                                                                            <img src="{{ asset('admin/images/user/150.png') }}"
-                                                                                class="" style=" max-width: 150px;"
-                                                                                id="up-img" alt="up-img">
+                                                                            @if ($user->avatar != null)
+                                                                                <img src="{{ asset('admin/images/users/' . $user->avatar) }}"
+                                                                                    class=""
+                                                                                id="up-img" alt="up-img" style=" max-width:
+                                                                                150px;">
+                                                                            @else
+                                                                                <img src="{{ asset('admin/images/user/150.png') }}"
+                                                                                    class="" style=" max-width:
+                                                                                    150px;" id="up-img" alt="up-img">
+                                                                            @endif
+
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </section>
-
                                                             {{-- contact --}}
                                                             <section>
                                                                 <div class="card-header">
@@ -171,8 +197,9 @@
                                                                                     for="phone">Contact
                                                                                     Phone</label>
                                                                                 <input type="text" id="phone" name="phone"
-                                                                                    class="form-control phone" data-mask="9999-999-999"
-                                                                                    value="033 6313 347">
+                                                                                    class="form-control phone"
+                                                                                    data-mask="9999-999-999"
+                                                                                    value="{{ $user->phone }}">
                                                                             </div>
                                                                         </div>
 
@@ -180,8 +207,8 @@
                                                                             <div class="form-group">
                                                                                 <label
                                                                                     class="form-label">Address</label>
-                                                                                <textarea
-                                                                                    class="form-control" name="address">3379  Monroe Avenue, Fort Myers, Florida(33912)</textarea>
+                                                                                <textarea class="form-control"
+                                                                                    name="address">{{ $user->address }}</textarea>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -189,7 +216,8 @@
                                                             </section>
                                                             <div class="card-footer text-right p-1">
                                                                 <button class="btn btn-primary">Update Profile</button>
-                                                                <button class="btn btn-outline-dark ml-2" type="reset">Clear</button>
+                                                                <button class="btn btn-outline-dark ml-2"
+                                                                    type="reset">Clear</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -251,7 +279,8 @@
                                                             <div class="card-footer text-right">
                                                                 <button class="btn btn-danger" type="submit">Change
                                                                     Password</button>
-                                                                <button class="btn btn-outline-dark ml-2" type="reset">Clear</button>
+                                                                <button class="btn btn-outline-dark ml-2"
+                                                                    type="reset">Clear</button>
                                                             </div>
                                                         </form>
                                                     </div>

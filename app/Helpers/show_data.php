@@ -1,4 +1,50 @@
 <?php
+//! FILE
+if (!function_exists('create_images')) {
+    function create_images($path_image, $name_image, $arr_images)
+    {
+        // dd($arr_images);
+        // Tạo folder mới nếu chưa có chỗ lưu
+        if (!file_exists($path_image)) {
+            mkdir($path_image, 0777, true);
+        }
+
+        // ! Tạo ảnh mới
+        $newImageName = time() . '-' . $name_image . '.' . $arr_images->extension();
+        // upload file into folder
+        $arr_images->move($path_image, $newImageName);
+
+        // Trả về tên hình ảnh vừa upload để lấy cập nhật vô database
+        return $newImageName;
+    }
+}
+if (!function_exists('remove_images')) {
+    function remove_images($name_image, $path_image)
+    {
+        // * Chỉ loại bỏ khi có ảnh trong database != null
+        if ($name_image != null) {
+            // check nếu đúng file thì loại nó ra khỏi local
+            if (File::exists($path_image . $name_image)) {
+                unlink($path_image . $name_image);
+            }
+        }
+    }
+}
+
+//! PHONE
+if (!function_exists('show_phone_number')) {
+    function show_phone_number($phone)
+    {
+        //  Mặc định xử lý ở đây là 10 số
+        $phone_number = sprintf(
+            "%s-%s-%s",
+            substr($phone, 0, 4),
+            substr($phone, 4, 3),
+            substr($phone, 7, 3)
+        );
+        return $phone_number;
+    }
+}
 if (!function_exists('redirect_follow_status')) {
     function redirect_follow_status($arr_status, $link_redirect)
     {

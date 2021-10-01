@@ -213,7 +213,11 @@
 
                                 // Loại bỏ thẻ vừa thay đổi trạng thái, nếu là trash thì ko
                                 if (action != 'trash') {
-                                    _this.closest("tr").hide();
+                                    // reload data bảng sau khi xóa
+                                    var item = $('tr#item-' + response.id);
+                                    var table = $('#users-table').DataTable();
+                                    table.row(item).remove().draw();
+
                                 }
 
                                 // show status
@@ -338,6 +342,7 @@
                     // Lấy thông tin user đang login gửi status cho controller để có giá trị
                     // vì khi gửi qua formData thì trường bị disable sẽ ko lấy đc giá trị
                     var user_login = {!! Auth()->user() !!};
+
                     // Lấy id trong form để so sánh
                     var id = $(form).data('id');
                     // Nếu cái status có id edit == id đăng nhập add giá trị cũ cho nó để gửi đi
@@ -366,10 +371,14 @@
                                 });
                             } else {
                                 if (response.code == 1) {
-                                    if(response.html != '')  {
+                                    if (response.html != '') {
                                         $('tr#item-' + response.id).html(response.html);
-                                    }else {
-                                        $('tr#item-' + response.id).hide();
+                                    } else {
+                                        // $('tr#item-' + response.id).hide();
+                                        // reload lại data bảng sau khi remove nó
+                                        var item = $('tr#item-' + response.id);
+                                        var table = $('#users-table').DataTable();
+                                        table.row(item).remove().draw();
                                     }
                                 }
                                 // reset form

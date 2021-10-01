@@ -92,7 +92,7 @@
                     {!! Form::label('address-edit', 'Adress') !!}
                 </div>
                 <div class="col-sm-10">
-                    {!! Form::textarea('address_edit', '', ['class' => 'form-control', 'rows' => 'auto', 'name' => 'address_edit']) !!}
+                    {!! Form::textarea('address-edit', '', ['class' => 'form-control', 'rows' => 'auto', 'name' => 'address_edit']) !!}
                 </div>
             </div>
             <div class="form-group row align-items-center">

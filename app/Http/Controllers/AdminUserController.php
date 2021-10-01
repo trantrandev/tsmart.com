@@ -276,7 +276,7 @@ class AdminUserController extends Controller
         // group count
         $count = [$count_user_active, $count_user_inactive, $count_user_trash];
 
-        return response()->json(['status' => 'true', 'count' => $count]);
+        return response()->json(['status' => 'true', 'count' => $count, 'id' => $request->user_id]);
     }
 
     function edit(Request $request, $id)
@@ -503,15 +503,62 @@ class AdminUserController extends Controller
         }
     }
 
-    function profile() {
-        return view('admin.user.profile');
+    function profile()
+    {
+        $user = User::find(Auth::id());
+        return view('admin.user.profile', compact('user'));
     }
 
-    function updateProfile(Request $request) {
-        dd($request->all());
+    function updateProfile(Request $request)
+    {
+        $request->validate(
+            [
+                'name'             => ['required', 'string', 'max:255'],
+                'avatar'           => 'image|mimes:jpeg,png,jpg|max:2048' //* không được cách ra nó sẽ bị lỗi
+            ],
+            [
+                'required'              => ':attribute không được để trống',
+                'min'                   => ':attribute ít nhất phải :min ký tự',
+                'max'                   => ':attribute nhiều nhất chỉ :max ký tự',
+                'avatar.max'            => 'Chỉ cho phép kích thước lớn nhất :max KB',
+                'avatar.mimes'          => 'Chỉ cho phép ảnh thuộc loại: png, jpeg, jpg',
+                'avatar.image'          => 'Chỉ cho phép upload hình ảnh'
+            ],
+            [
+                'name'             => 'Họ tên',
+                'avatar'           => 'Ảnh đại diện',
+            ]
+        );
+
+        // xử lý choose file
+        if ($request->hasFile('avatar')) {
+            $path_image = public_path('admin/images/users');
+            // ! Tạo ảnh mới
+            $newImageName = create_images($path_image, $request->name, $request->avatar);
+            // ! Loại bỏ ảnh cũ
+            // * Lấy tên ảnh cũ trong database trước khi upload để remove nó
+            $name_image = User::select('avatar')->find(Auth::id());
+            remove_images($name_image->avatar, public_path('admin/images/users/'));
+        }else {
+            //* Lấy ảnh có sẵn trong csdl lại
+            $newImageName = Auth::user()->avatar;
+        }
+
+        // * Lấy dữ liệu user để tiến hành update
+        $data = Auth::user();
+        // * Lấy dữ liệu cập nhật database
+        $data->name    = $request->name;
+        $data->gender  = $request->gender;
+        $data->avatar  = $newImageName;
+        $data->phone   = str_replace('-', '', $request->phone);
+        $data->address = $request->address;
+
+        $data->update();
+        return back();
     }
 
-    function changePassword(Request $request) {
+    function changePassword(Request $request)
+    {
         // dd($request->all());
         echo "ok";
     }
