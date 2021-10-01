@@ -42,5 +42,9 @@ Route::middleware('auth')->group(function(){
     Route::POST('admin/user/update/{id}', [AdminUserController::class, 'update'])->name('user.update');
 
     Route::GET('admin/user/changeStatus', [AdminUserController::class, 'change_status'])->name('user.change_status');
+
+    Route::GET('admin/user/profile', [AdminUserController::class, 'profile'])->name('user.profile');
+    Route::POST('admin/user/changePassword', [AdminUserController::class, 'changePassword'])->name('user.change_password');
+    Route::POST('admin/user/updateProfile', [AdminUserController::class, 'updateProfile'])->name('user.update_profile');
 });
 

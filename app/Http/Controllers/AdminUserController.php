@@ -502,4 +502,17 @@ class AdminUserController extends Controller
             return response()->json(['code' => 1, 'html' => $html, 'id' => $id]);
         }
     }
+
+    function profile() {
+        return view('admin.user.profile');
+    }
+
+    function updateProfile(Request $request) {
+        dd($request->all());
+    }
+
+    function changePassword(Request $request) {
+        // dd($request->all());
+        echo "ok";
+    }
 }

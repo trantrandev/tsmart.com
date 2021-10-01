@@ -77,6 +77,13 @@
              $('.custom-file-label').text(name_file);
          });
      });
+
+    //  mask phone
+     $(document).ready(function() {
+         $(".phone").inputmask({
+             mask: "9999-999-999"
+         });
+     });
  </script>
  {!! Toastr::message() !!}
  </body>

@@ -177,14 +177,3 @@
         </div>{{-- End pcoded-inner-content --}}
     </div>{{-- End pcoded-conent --}}
 @endsection
-
-@section('add_js')
-
-    <script>
-        $(document).ready(function() {
-            $(".phone").inputmask({
-                mask: "9999-999-999"
-            });
-        });
-    </script>
-@endsection
