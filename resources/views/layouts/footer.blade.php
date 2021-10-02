@@ -85,6 +85,7 @@
          });
      });
  </script>
+
  {!! Toastr::message() !!}
  </body>
 

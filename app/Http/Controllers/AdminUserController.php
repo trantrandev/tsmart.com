@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Validator;
 use Toastr;
 use File;
+use App\Rules\MatchOldPassword;
 use DataTables;
 
 class AdminUserController extends Controller
@@ -539,7 +540,7 @@ class AdminUserController extends Controller
             // * Lấy tên ảnh cũ trong database trước khi upload để remove nó
             $name_image = User::select('avatar')->find(Auth::id());
             remove_images($name_image->avatar, public_path('admin/images/users/'));
-        }else {
+        } else {
             //* Lấy ảnh có sẵn trong csdl lại
             $newImageName = Auth::user()->avatar;
         }
@@ -554,12 +555,36 @@ class AdminUserController extends Controller
         $data->address = $request->address;
 
         $data->update();
+        Toastr::success('Cập nhật thông tin thành công', 'Cập nhật');
         return back();
     }
 
     function changePassword(Request $request)
     {
-        // dd($request->all());
-        echo "ok";
+        $request->validate(
+            [
+                'password_current' => ['required', new MatchOldPassword],
+                'new_password'     => ['required', 'string', 'min:8'],
+                'confirm_password' => 'same:new_password',
+            ],
+            [
+                'required'              => ':attribute không được để trống',
+                'confirm_password.same' => ':attribute không trùng khớp',
+                'min'                   => ':attribute ít nhất phải :min ký tự',
+                'max'                   => ':attribute nhiều nhất chỉ :max ký tự',
+            ],
+            [
+                'new_password'     => 'Mật khẩu mới',
+                'confirm_password' => 'Nhập lại mật khẩu',
+                'current_password' => 'Mật khẩu hiện tại',
+            ]
+        );
+
+        $user = User::find(auth()->user()->id);
+        $user->update([
+            'password' =>  Hash::make($request->new_password)
+        ]);
+        Toastr::success('Thay đổi mật khẩu thành công', 'Đổi mật khẩu');
+        return back();
     }
 }

@@ -77,7 +77,8 @@
                                                     <a class="nav-link list-group-item active list-group-item-action"
                                                         id="user-set-information-tab" data-toggle="pill"
                                                         href="#user-set-information" role="tab"
-                                                        aria-controls="user-set-information" aria-selected="true">
+                                                        aria-controls="user-set-information" aria-selected="true"
+                                                        data-tab="user-set-information">
                                                         <span class="f-w-500"><i
                                                                 class="feather icon-user m-r-10 h5 "></i>Personal
                                                             Information</span>
@@ -85,9 +86,10 @@
                                                                 class="feather icon-chevron-right"></i></span>
                                                     </a>
                                                     <a class="nav-link list-group-item list-group-item-action"
-                                                        id="user-set-passwort-tab" data-toggle="pill"
-                                                        href="#user-set-passwort" role="tab"
-                                                        aria-controls="user-set-passwort" aria-selected="false">
+                                                        id="user-set-password-tab" data-toggle="pill"
+                                                        href="#user-set-password" role="tab"
+                                                        aria-controls="user-set-password" aria-selected="false"
+                                                        data-tab="user-set-password">
                                                         <span class="f-w-500"><i
                                                                 class="feather icon-shield m-r-10 h5 "></i>Change
                                                             Password</span>
@@ -168,8 +170,10 @@
                                                                             @if ($user->avatar != null)
                                                                                 <img src="{{ asset('admin/images/users/' . $user->avatar) }}"
                                                                                     class=""
-                                                                                id="up-img" alt="up-img" style=" max-width:
-                                                                                150px;">
+                                                                                id="
+                                                                                    up-img" alt="up-img"
+                                                                                    style=" max-width:
+                                                                                                                                                                                        150px;">
                                                                             @else
                                                                                 <img src="{{ asset('admin/images/user/150.png') }}"
                                                                                     class="" style=" max-width:
@@ -223,8 +227,8 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="tab-pane fade" id="user-set-passwort" role="tabpanel"
-                                                    aria-labelledby="user-set-passwort-tab">
+                                                <div class="tab-pane fade" id="user-set-password" role="tabpanel"
+                                                    aria-labelledby="user-set-password-tab">
                                                     <div class="card">
                                                         <form action="{{ route('user.change_password') }}" method="POST">
                                                             @csrf
@@ -238,16 +242,21 @@
                                                                     <div class="col-sm-6">
                                                                         <div class="form-group">
                                                                             <label class="form-label"
-                                                                                for="current-password">Current Password
+                                                                                for="password-current">Current Password
                                                                                 <span
                                                                                     class="text-danger">*</span></label>
-                                                                            <input type="text" id="current-password"
-                                                                                name="current_password"
+                                                                            <input type="password" id="password-current"
+                                                                                 name="password_current"
                                                                                 class="form-control"
-                                                                                placeholder="Enter Your current password">
+                                                                                placeholder="Enter Your current password"
+                                                                                value="{{ $errors->has('password_current')?'':old('password_current') }}">
                                                                             <small class="form-text text-muted">Forgot
                                                                                 password? <a href="#!">Click
                                                                                     here</a></small>
+                                                                            @error('password_current')
+                                                                                <span class="text-danger d-block mt-1"
+                                                                                    style="font-size: 13px">{{ $message }}</span>
+                                                                            @enderror
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -257,9 +266,15 @@
                                                                             <label class="form-label"
                                                                                 for="new-password">New Password <span
                                                                                     class="text-danger">*</span></label>
-                                                                            <input type="text" id="new-password"
-                                                                                name="new_password" class="form-control"
-                                                                                placeholder="Enter New password">
+                                                                            <input type="password" id="new-password"
+                                                                                 name="new_password"
+                                                                                class="form-control"
+                                                                                placeholder="Enter New password"
+                                                                                value="{{ $errors->has('new_password')?'':old('new_password') }}">
+                                                                            @error('new_password')
+                                                                                <span class="text-danger d-block mt-1"
+                                                                                    style="font-size: 13px">{{ $message }}</span>
+                                                                            @enderror
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-6">
@@ -268,10 +283,15 @@
                                                                                 for="confirm-password">Confirm Password
                                                                                 <span
                                                                                     class="text-danger">*</span></label>
-                                                                            <input type="text" id="confirm-password"
-                                                                                name="confirm_password"
+                                                                            <input type="password" id="confirm-password"
+                                                                                 name="confirm_password"
                                                                                 class="form-control"
-                                                                                placeholder="Enter your password again">
+                                                                                placeholder="Enter your password again"
+                                                                                value="{{ $errors->has('confirm_password')?'':old('confirm_password') }}">
+                                                                            @error('confirm_password')
+                                                                                <span class="text-danger d-block mt-1"
+                                                                                    style="font-size: 13px">{{ $message }}</span>
+                                                                            @enderror
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -299,4 +319,49 @@
 
         </div>{{-- End pcoded-inner-content --}}
     </div>{{-- End pcoded-conent --}}
+    <script>
+        $(document).ready(function() {
+            function create_sessionStorge_tab_active() {
+                $('#user-set-tab a.list-group-item-action').click(function() {
+                    // Ghi lại tab kích vào
+                    var idTab = $(this).attr('id');
+                    sessionStorage.setItem('idCurrentTabUser', idTab);
+
+                    // Nội dung tab id pane
+                    var name_tab = $(this).data('tab');
+                    sessionStorage.setItem('idTabPaneUser', name_tab);
+                });
+            } // End create_sessStorge_tab_active()
+
+            function active_tab() {
+                // Active tab lên
+                var sessionIdTab = sessionStorage.getItem('idCurrentTabUser');
+                $('#' + sessionIdTab).addClass(['show', 'active']);
+            } // End active_tab()
+
+            function active_tab_pane() {
+                // Thêm class show active tab mới vào
+                var idTabPane = sessionStorage.getItem('idTabPaneUser');
+                $('.tab-pane#' + idTabPane).addClass(['show', 'active']);
+            } // End active_tab_pane()
+
+            function load_tab() {
+                if (sessionStorage.getItem('idTabPaneUser')) {
+                    // loại bỏ tab active trước đó
+                    $('a.list-group-item-action').removeClass(['show', 'active']);
+
+                    // Loại bỏ class show active của các tab-pane trước
+                    $('.tab-pane').removeClass(['show', 'active']);
+
+                    active_tab();
+                    active_tab_pane();
+                }
+            } // End load_tab()
+
+            // Chạy hàm thực thi tab
+            create_sessionStorge_tab_active();
+            load_tab();
+
+        }); // End jquery
+    </script>
 @endsection

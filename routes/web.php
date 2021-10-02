@@ -28,7 +28,7 @@ Route::get('/admin', function () {
 require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function(){
-    // USER
+    // ===================================== USER ====================================
     Route::GET('admin/user/list', [AdminUserController::class, 'list'])->name('user.list');
 
     Route::GET('admin/user/add', [AdminUserController::class, 'add'])->name('user.add');
@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function(){
 
     Route::GET('admin/user/changeStatus', [AdminUserController::class, 'change_status'])->name('user.change_status');
 
+    // profile
     Route::GET('admin/user/profile', [AdminUserController::class, 'profile'])->name('user.profile');
     Route::POST('admin/user/changePassword', [AdminUserController::class, 'changePassword'])->name('user.change_password');
     Route::POST('admin/user/updateProfile', [AdminUserController::class, 'updateProfile'])->name('user.update_profile');
