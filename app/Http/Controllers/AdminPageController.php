@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
 
 namespace App\Http\Controllers;
 
@@ -18,7 +18,41 @@ class AdminPageController extends Controller
 
     public function add()
     {
+        return view('admin.page.add');
+    }
 
+    public function store(Request $request)
+    {
+        $request->validate(
+            [
+                'title' => ['required', 'string', 'max:255'],
+                'slug' => ['required', 'string', 'max:255'],
+                'status' => 'required'
+            ],
+            [
+                'required' => ':attribute không được để trống',
+                'min' => ':attribute ít nhất phải :min ký tự',
+                'max' => ':attribute nhiều nhất chỉ :max ký tự',
+                'status.required' => 'Hãy chọn :attribute',
+            ],
+            [
+                'title' => 'Tiêu đề trang',
+                'status' => 'Trạng thái',
+                'slug' => 'Slug'
+            ]
+        );
+
+        $data = array(
+            'title' => $request->title,
+            'slug' => $request->slug,
+            'detail' => $request->detail,
+            'status' => $request->status,
+            'user_id' => Auth::id()
+        );
+
+        Page::create($data);
+        Toastr::success('Thêm thành công', 'Thêm trang');
+        return redirect('admin/page/list');
     }
 
     public function edit($id)
@@ -62,8 +96,10 @@ class AdminPageController extends Controller
         return redirect('admin/page/list');
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
-
+        Page::find($id)->delete();
+        Toastr::success('Xóa thành công', 'Xóa trang');
+        return redirect('admin/page/list');
     }
 }

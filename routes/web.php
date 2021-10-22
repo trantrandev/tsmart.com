@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function(){
     // ===================================== PAGE ====================================
     Route::GET('admin/page/list', [AdminPageController::class, 'list'])->name('page.list');
     Route::GET('admin/page/add', [AdminPageController::class, 'add'])->name('page.add');
+    Route::POST('admin/page/store', [AdminPageController::class, 'store'])->name('page.store');
     Route::GET('admin/page/edit/{id}', [AdminPageController::class, 'edit'])->name('page.edit');
     Route::POST('admin/page/update/{id}', [AdminPageController::class, 'update'])->name('page.update');
     Route::GET('admin/page/delete/{id}', [AdminPageController::class, 'delete'])->name('page.delete');
