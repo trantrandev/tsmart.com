@@ -1,4 +1,17 @@
 <?php
+if (!function_exists('show_status_page')) {
+    function show_status_page($status)
+    {
+        $array_data = array(
+            'active' => '<span class="badge badge-success">Kích hoạt</span>',
+            'inactive' => '<span class="badge badge-secondary">Vô hiệu hóa</span>'
+        );
+        if (array_key_exists($status, $array_data)) {
+            return $array_data[$status];
+        }
+    }
+}
+
 //! FILE
 if (!function_exists('create_images')) {
     function create_images($path_image, $name_image, $arr_images)
@@ -144,10 +157,10 @@ if (!function_exists('show_status_user_1')) {
     {
         $array_data = array(
             'active' =>
-            '<div class="status dropdown action-label">
+                '<div class="status dropdown action-label">
 			<a class="text-white rounded label theme-bg f-12" href="#!">' . $status . '</a></div>',
             'inactive' =>
-            '<div class="status dropdown action-label">
+                '<div class="status dropdown action-label">
             <a class="label rounded theme-bg2 f-12 text-white" href="#!">' . $status . '</a>
 			</div>'
 
@@ -173,12 +186,12 @@ if (!function_exists('show_status_user')) {
     {
         $array_data = array(
             'active' =>
-            '<div class="switch switch-success d-inline m-r-10">
+                '<div class="switch switch-success d-inline m-r-10">
             <input type="checkbox" id="switch-s-' . $id . '" checked data-id="' . $id . '">
             <label for="switch-s-' . $id . '" class="cr"></label>
             </div>',
             'inactive' =>
-            '<div class="switch switch-success d-inline m-r-10">
+                '<div class="switch switch-success d-inline m-r-10">
             <input type="checkbox" id="switch-s-' . $id . '" data-id="' . $id . '">
             <label for="switch-s-' . $id . '" class="cr"></label>
             </div>'

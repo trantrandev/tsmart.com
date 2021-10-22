@@ -10,7 +10,6 @@ use Validator;
 use Toastr;
 use File;
 use App\Rules\MatchOldPassword;
-use DataTables;
 
 class AdminUserController extends Controller
 {

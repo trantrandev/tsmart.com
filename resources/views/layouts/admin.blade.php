@@ -32,6 +32,8 @@
     {{-- <script src="{{ asset('admin/js/jquery-3.6.0.js') }}"></script> --}}
     {{-- same jquery --}}
     <script src="{{ asset('admin/js/vendor-all.min.js') }}"></script>
+    <script src="https://cdn.tiny.cloud/1/1in0ekeaxvf1szp7qq394rxn48u0pyox50g6vol2vel774ao/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
 
 </head>
 
@@ -158,11 +160,11 @@
                             <div class="pro-head">
                                 {{-- Images avatar --}}
                                 @if (Auth::user()->avatar == null)
-                                    <img src="{{ asset(show_string_avatar(Auth::user()->gender)) }}" class="img-radius"
-                                        alt="User-Profile-Image">
+                                    <img src="{{ asset(show_string_avatar(Auth::user()->gender)) }}"
+                                        class="img-radius" alt="User-Profile-Image">
                                 @else
-                                <img src="{{ asset('admin/images/users/' . Auth::user()->avatar) }}" class="img-radius"
-                                alt="User-Profile-Image">
+                                    <img src="{{ asset('admin/images/users/' . Auth::user()->avatar) }}"
+                                        class="img-radius" alt="User-Profile-Image">
                                 @endif
 
                                 <span>{{ Auth::user()->name }}
@@ -178,7 +180,8 @@
                             <ul class="pro-body">
                                 <li><a href="" class="dropdown-item"><i class="feather icon-settings"></i>
                                         Settings</a></li>
-                                <li><a href="{{ route('user.profile') }}" class="dropdown-item"><i class="feather icon-user"></i> Profile</a>
+                                <li><a href="{{ route('user.profile') }}" class="dropdown-item"><i
+                                            class="feather icon-user"></i> Profile</a>
                                 </li>
                                 <li><a href="message.html" class="dropdown-item"><i class="feather icon-mail"></i> My
                                         Messages</a></li>

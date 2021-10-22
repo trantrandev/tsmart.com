@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminPageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,5 +48,16 @@ Route::middleware('auth')->group(function(){
     Route::GET('admin/user/profile', [AdminUserController::class, 'profile'])->name('user.profile');
     Route::POST('admin/user/changePassword', [AdminUserController::class, 'changePassword'])->name('user.change_password');
     Route::POST('admin/user/updateProfile', [AdminUserController::class, 'updateProfile'])->name('user.update_profile');
+
+    // ===================================== PAGE ====================================
+    Route::GET('admin/page/list', [AdminPageController::class, 'list'])->name('page.list');
+    Route::GET('admin/page/add', [AdminPageController::class, 'add'])->name('page.add');
+    Route::GET('admin/page/edit/{id}', [AdminPageController::class, 'edit'])->name('page.edit');
+    Route::POST('admin/page/update/{id}', [AdminPageController::class, 'update'])->name('page.update');
+    Route::GET('admin/page/delete/{id}', [AdminPageController::class, 'delete'])->name('page.delete');
+
+    Route::group(['prefix' => 'laravel-filemanager'], function () {
+        \UniSharp\LaravelFilemanager\Lfm::routes();
+    });
 });
 

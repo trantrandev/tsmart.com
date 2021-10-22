@@ -180,6 +180,9 @@ return [
         Brian2694\Toastr\ToastrServiceProvider::class,
         // datatable yajra
         Yajra\DataTables\DataTablesServiceProvider::class,
+        // laravel file manager
+        UniSharp\LaravelFilemanager\LaravelFilemanagerServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -238,6 +241,8 @@ return [
         'Toastr'  => Brian2694\Toastr\Facades\Toastr::class,
         // data table yajra
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        // laravel file manager
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];
