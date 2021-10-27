@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminPageController;
+use App\Http\Controllers\AdminProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,7 +53,7 @@ Route::middleware('auth')->group(function(){
     // ===================================== PAGE ====================================
     Route::GET('admin/page/list', [AdminPageController::class, 'list'])->name('page.list');
     Route::GET('admin/page/add', [AdminPageController::class, 'add'])->name('page.add');
-    Route::POST('admin/page/store', [AdminPageController::class, 'store'])->name('page.store');
+    Route::POST('admin/page`/store', [AdminPageController::class, 'store'])->name('page.store');
     Route::GET('admin/page/edit/{id}', [AdminPageController::class, 'edit'])->name('page.edit');
     Route::POST('admin/page/update/{id}', [AdminPageController::class, 'update'])->name('page.update');
     Route::GET('admin/page/delete/{id}', [AdminPageController::class, 'delete'])->name('page.delete');
@@ -60,5 +61,20 @@ Route::middleware('auth')->group(function(){
     Route::group(['prefix' => 'laravel-filemanager'], function () {
         \UniSharp\LaravelFilemanager\Lfm::routes();
     });
+
+    // ===================================== PRODUCT ====================================
+    Route::GET('admin/product/list', [AdminProductController::class, 'list'])->name('product.list');
+    Route::GET('admin/product/add', [AdminProductController::class, 'add'])->name('product.add');
+    Route::POST('admin/product/store', [AdminProductController::class, 'store'])->name('product.store');
+    Route::GET('admin/product/edit/{id}', [AdminProductController::class, 'edit'])->name('product.edit');
+    Route::POST('admin/product/update/{id}', [AdminProductController::class, 'update'])->name('product.update');
+    Route::GET('admin/product/delete/{id}', [AdminProductController::class, 'delete'])->name('product.delete');
+    /*cat*/
+    Route::GET('admin/product/cat/list', [AdminProductController::class, 'listCat'])->name('product.cat.list');
+    Route::GET('admin/product/cat/add', [AdminProductController::class, 'addCat'])->name('product.cat.add');
+    Route::POST('admin/product/cat/store', [AdminProductController::class, 'storeCat'])->name('product.cat.store');
+    Route::GET('admin/product/cat/edit/{id}', [AdminProductController::class, 'editCat'])->name('product.cat.edit');
+    Route::POST('admin/product/cat/update/{id}', [AdminProductController::class, 'updateCat'])->name('product.cat.update');
+    Route::GET('admin/product/cat/delete/{id}', [AdminProductController::class, 'deleteCat'])->name('product.cat.delete');
 });
 

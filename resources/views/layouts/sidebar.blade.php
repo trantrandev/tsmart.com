@@ -30,13 +30,13 @@
                 <li class="nav-item pcoded-menu-caption">
                     <label>Shop</label>
                 </li>
-            <li class="nav-item pcoded-hasmenu">
-                <a href="#!" class="nav-link"><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Products</span></a>
+            <li class="nav-item pcoded-hasmenu {{ Request::segment(2)=='product'?'pcoded-trigger active':null }}">
+                <a href="{{ url('admin/product/list') }}" class="nav-link"><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Products</span></a>
                 <i class="feather icon-chevron-right arrow"></i>
                 <ul class="pcoded-submenu">
-                    <li class=""><a href="bc_alert.html" class="">List product</a></li>
-                    <li class=""><a href="bc_button.html" class="">Add product</a></li>
-                    <li class=""><a href="bc_badges.html" class="">Categories product</a></li>
+                    <li class="{{ Route::is('product.list')?'active':null }}"><a href="{{ url('admin/product/list') }}" class="">List product</a></li>
+                    <li class="{{ Route::is('product.add')?'active':null }}"><a href="{{ url('admin/product/add') }}" class="">Add product</a></li>
+                    <li class="{{ Route::is('product.cat.list')?'active':null }}"><a href="{{ url('admin/product/cat/list') }}">Categories product</a></li>
                 </ul>
             </li>
             <li class="nav-item pcoded-hasmenu">
