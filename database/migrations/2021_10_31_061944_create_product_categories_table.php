@@ -18,9 +18,9 @@ class CreateProductCategoriesTable extends Migration
             $table->string('name', 255);
             $table->string('slug', 255);
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->integer('parent_id');
+            $table->integer('parent_id')->default(0);
             $table->unsignedBigInteger('added_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
 
             $table -> foreign('added_by')->references('id')->on('users')->onDelete('cascade');

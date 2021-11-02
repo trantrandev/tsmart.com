@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->string('short_desc', 500)->nullable();
             $table->longtext('description')->nullable();
             $table->unsignedBigInteger('added_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('product_cat_id');
             $table->timestamps();
 

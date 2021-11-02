@@ -26,7 +26,7 @@
                                             <h5>Thêm danh mục</h5>
                                         </div>
                                         <div class="card-block ">
-                                            {!! Form::open(['method' => 'POST', 'url' => 'admin/product/cat/store']) !!}
+                                            {!! Form::open(['method' => 'POST', 'url' => 'admin/product/cat/create']) !!}
                                             <div class="form-group">
                                                 {{ Form::label('name', 'Tên danh mục') }}
                                                 {!! Form::text('name', old('name'), ['class' => 'form-control', 'placeholder' => 'Tên danh mục', 'onkeyup'=> 'changeToSlug("name")']) !!}
@@ -45,7 +45,14 @@
                                             </div>
                                             <div class="form-group">
                                                 {{ Form::label('cat_parent', 'Danh mục cha') }}
-                                                {{ Form::select('cat_parent', ['Danh mục cha',5 =>1, 2], '', ['id' => 'cat-parent', 'class' => 'form-control']) }}
+                                                <select class="form-select form-control" name="cat_parent" id="cat">
+                                                    <option selected value="0">Danh mục cha</option>
+                                                    @foreach($list_cat as $cat)
+                                                        <option
+                                                            value="{{ $cat->id }}">{{ show_categories($cat->level, $cat->name)  }}</option>
+                                                    @endforeach
+                                                </select>
+
                                             </div>
                                             <div class="form-group">
                                                 {{ Form::label('status', 'Trạng thái') }}
@@ -65,29 +72,35 @@
                                                 <thead>
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Tên danh m</th>
+                                                    <th scope="col">Tên danh mục</th>
                                                     <th scope="col">Slug</th>
                                                     <th scope="col">Tác vụ</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>Mark</td>
-                                                    <td>Otto</td>
-                                                    <td>
-                                                        <button
-                                                            class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
-                                                            type="button" data-modal="modal-edit-user">
-                                                            <i class="feather icon-edit f-16  text-c-green"></i>
-                                                        </button>
-                                                        <a class="btn btn-danger btn-sm btn-action btn-delete"
-                                                           href="{{ route('product.cat.delete', 3) }}"
-                                                           onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
-                                                            <i class="feather icon-trash-2 f-16 text-c-red"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                                @php
+                                                    $t = 0;
+                                                @endphp
+                                                @foreach($list_cat as $cat)
+                                                    <tr>
+                                                        @php $t++; @endphp
+                                                        <th scope="row">{{ $t }}</th>
+                                                        <td> {{ show_categories($cat->level, $cat->name)  }}</td>
+                                                        <td>{{ $cat->slug }}</td>
+                                                        <td>
+                                                            <button
+                                                                class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
+                                                                type="button" data-modal="modal-edit-user">
+                                                                <i class="feather icon-edit f-16  text-c-green"></i>
+                                                            </button>
+                                                            <a class="btn btn-danger btn-sm btn-action btn-delete"
+                                                               href="{{ route('product.cat.delete', 3) }}"
+                                                               onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                                                <i class="feather icon-trash-2 f-16 text-c-red"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                                 </tbody>
                                             </table>
                                         </div>{{-- ENd card block --}}

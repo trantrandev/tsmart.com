@@ -1,4 +1,33 @@
-<?php
+<?php /** @noinspection SpellCheckingInspection */
+/** @noinspection TypeUnsafeComparisonInspection */
+if (!function_exists('show_categories')) {
+    function show_categories($level, $name, $string = "---^")
+    {
+        $name_cat = str_repeat($string, $level) . $name;
+        return $name_cat;
+    }
+}
+
+if (!function_exists('data_tree')) {
+    function data_tree($data, $parent_id = 0, $level = 0)
+    {
+        $result = array();
+        foreach ($data as $item) {
+            if ($item->parent_id == $parent_id) {
+                $item->level = $level;
+                $result[] = $item;
+                //Loại bỏ phần tử vừa chạy ra, để ko lặp lại nó nữa
+                unset($data[$item->id]);
+                $child = data_tree($data, $item->id, $level + 1);
+                // gộp mảng con luon
+                $result = array_merge($result, $child);
+
+            }
+        }
+        return $result;
+    }
+}
+
 if (!function_exists('show_status_page')) {
     function show_status_page($status)
     {
@@ -18,8 +47,8 @@ if (!function_exists('create_images')) {
     {
         // dd($arr_images);
         // Tạo folder mới nếu chưa có chỗ lưu
-        if (!file_exists($path_image)) {
-            mkdir($path_image, 0777, true);
+        if (!file_exists($path_image) && !mkdir($path_image, 0777, true) && !is_dir($path_image)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $path_image));
         }
 
         // ! Tạo ảnh mới
@@ -35,11 +64,9 @@ if (!function_exists('remove_images')) {
     function remove_images($name_image, $path_image)
     {
         // * Chỉ loại bỏ khi có ảnh trong database != null
-        if ($name_image != null) {
-            // check nếu đúng file thì loại nó ra khỏi local
-            if (File::exists($path_image . $name_image)) {
-                unlink($path_image . $name_image);
-            }
+        // check nếu đúng file thì loại nó ra khỏi local
+        if (($name_image != null) && File::exists($path_image . $name_image)) {
+            unlink($path_image . $name_image);
         }
     }
 }
