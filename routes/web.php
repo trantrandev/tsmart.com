@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\AdminCatProductController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminPageController;
-use App\Http\Controllers\AdminProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
