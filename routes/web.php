@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminCatProductController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminPageController;
+use App\Http\Controllers\AdminProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -60,5 +62,19 @@ Route::middleware('auth')->group(function(){
     Route::group(['prefix' => 'laravel-filemanager'], function () {
         \UniSharp\LaravelFilemanager\Lfm::routes();
     });
+
+    // ===================================== PRODUCT ====================================
+    Route::GET('admin/product/list', [AdminProductController::class, 'list'])->name('product.list');
+    Route::GET('admin/product/add', [AdminProductController::class, 'add'])->name('product.add');
+    Route::POST('admin/product/store', [AdminProductController::class, 'store'])->name('product.store');
+    Route::GET('admin/product/edit/{id}', [AdminProductController::class, 'edit'])->name('product.edit');
+    Route::POST('admin/product/update/{id}', [AdminProductController::class, 'update'])->name('product.update');
+    Route::GET('admin/product/delete/{id}', [AdminProductController::class, 'delete'])->name('product.delete');
+    /*cat*/
+    Route::GET('admin/product/cat/list', [AdminCatProductController::class, 'listCat'])->name('product.cat.list');
+    Route::POST('admin/product/cat/store', [AdminCatProductController::class, 'storeCat'])->name('product.cat.store');
+    Route::GET('admin/product/cat/edit/{id}', [AdminCatProductController::class, 'editCat'])->name('product.cat.edit');
+    Route::POST('admin/product/cat/update/{id}', [AdminCatProductController::class, 'updateCat'])->name('product.cat.update');
+    Route::GET('admin/product/cat/delete/{id}', [AdminCatProductController::class, 'deleteCat'])->name('product.cat.delete');
 });
 

@@ -31,7 +31,7 @@
                                             <span class="text-danger" style="font-size:12px">(*)</span>
                                         </div>
                                         <div class="col-sm-10">
-                                            {!! Form::text('title', $page->title, ['class' => 'form-control', 'placeholder' => 'Name input', 'onkeyup'=> 'changeToSlug()']) !!}
+                                            {!! Form::text('title', $page->title, ['class' => 'form-control', 'placeholder' => 'Name input', 'onkeyup'=> 'changeToSlug("title")']) !!}
                                             @error('title')
                                             <span class="text-danger d-block mt-1"
                                                   style="font-size: 13px">{{ $message }}</span>
@@ -49,6 +49,7 @@
                                             <span class="text-danger d-block mt-1"
                                                   style="font-size: 13px">{{ $message }}</span>
                                             @enderror
+                                            
                                         </div>
                                     </div>
                                     <div class="form-group row align-items-center">
@@ -149,37 +150,5 @@
             $(document).ready(function () {
 
             });
-        </script>
-        <script type="text/javascript">
-            function changeToSlug() {
-                var slug;
-                //Lấy text từ thẻ input title
-                slug = document.getElementById("title").value;
-                slug = slug.toLowerCase();
-
-                //Đổi ký tự có dấu thành không dấu
-                slug = slug.replace(/[áàảạãăắằẳẵặâấầẩẫậ]/gi, 'a');
-                slug = slug.replace(/[éèẻẽẹêếềểễệ]/gi, 'e');
-                slug = slug.replace(/[iíìỉĩị]/gi, 'i');
-                slug = slug.replace(/[óòỏõọôốồổỗộơớờởỡợ]/gi, 'o');
-                slug = slug.replace(/[úùủũụưứừửữự]/gi, 'u');
-                slug = slug.replace(/[ýỳỷỹỵ]/gi, 'y');
-                slug = slug.replace(/đ/gi, 'd');
-                //Xóa các ký tự đặt biệt
-                slug = slug.replace(/[`~!@#|$%^&*()+=,.\/?><'":;_]/gi, '');
-                //Đổi khoảng trắng thành ký tự gạch ngang
-                slug = slug.replace(/ /gi, "-");
-                //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
-                //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
-                slug = slug.replace(/-----/gi, '-');
-                slug = slug.replace(/----/gi, '-');
-                slug = slug.replace(/---/gi, '-');
-                slug = slug.replace(/--/gi, '-');
-                //Xóa các ký tự gạch ngang ở đầu và cuối
-                slug = '@' + slug + '@';
-                slug = slug.replace(/@-|-@|@/gi, '');
-                //In slug ra textbox có id “slug”
-                document.getElementById('slug').value = slug;
-            }
         </script>
 @endsection

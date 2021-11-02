@@ -1,4 +1,6 @@
-<?php /** @noinspection DuplicatedCode */
+<?php /** @noinspection PhpUnreachableStatementInspection */
+
+/** @noinspection DuplicatedCode */
 
 namespace App\Http\Controllers;
 
@@ -6,6 +8,7 @@ use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Toastr;
+use Redirect;
 
 class AdminPageController extends Controller
 {
@@ -26,7 +29,7 @@ class AdminPageController extends Controller
         $request->validate(
             [
                 'title' => ['required', 'string', 'max:255'],
-                'slug' => ['required', 'string', 'max:255'],
+                'slug' => ['required', 'string', 'max:255', 'unique:pages'],
                 'status' => 'required'
             ],
             [
@@ -34,6 +37,7 @@ class AdminPageController extends Controller
                 'min' => ':attribute ít nhất phải :min ký tự',
                 'max' => ':attribute nhiều nhất chỉ :max ký tự',
                 'status.required' => 'Hãy chọn :attribute',
+                'slug.unique' => 'Slug đã tồn tại hãy nhập slug khác'
             ],
             [
                 'title' => 'Tiêu đề trang',
@@ -82,6 +86,16 @@ class AdminPageController extends Controller
                 'slug' => 'Slug'
             ]
         );
+        /* Nếu slug của thằng id hiện tại bằng hiện tại thì thôi,
+        Ngược lại: nếu mà ko bằng thì kiểm tra nếu trùng thì báo lỗi cho nó */
+        $slug_old = Page::select('slug')->find($id);
+        if ($slug_old->slug !== $request->slug) {
+            //check slug trong database nếu trùng thì báo lỗi
+            if (Page::where('slug', '=', $request->slug)->exists()) {
+                //slug đã tồn tại trong hệ thống
+                return Redirect::back()->withErrors(['slug' => 'Slug đã tồn tại, xin hãy nhập slug khác']);
+            }
+        }
 
         $data = array(
             'title' => $request->title,

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePagesTable extends Migration
+class CreateProductCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function (Blueprint $table) {
+        Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255);
-            $table->string('slug', 255)->unique();
+            $table->string('name', 255);
+            $table->string('slug', 255);
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->text('detail')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->integer('parent_id');
+            $table->unsignedBigInteger('added_by');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
-            $table -> foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table -> foreign('added_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -33,6 +34,6 @@ class CreatePagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pages');
+        Schema::dropIfExists('product_categories');
     }
 }
