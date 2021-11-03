@@ -5,6 +5,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,10 @@ class AdminProductCategoryController extends Controller
 {
     function listCat()
     {
-        $product_categories = ProductCategory::where('status', '=', 'active')->get();
+        $product_categories = ProductCategory::get();
+
         $list_cat = data_tree($product_categories, 0);
+
         return view('admin/product/listCat', compact('list_cat'));
     }
 
@@ -43,7 +46,7 @@ class AdminProductCategoryController extends Controller
         );
 
         $data = array(
-            'name' => $request->name,
+            'name' => ucfirst($request->name),
             'slug' => $request->slug,
             'status' => $request->status,
             'added_by' => Auth::id(),
@@ -53,5 +56,24 @@ class AdminProductCategoryController extends Controller
         ProductCategory::create($data);
         Toastr::success('Thêm thành công', 'Thêm danh mục');
         return redirect('admin/product/cat/list');
+    }
+
+    function deleteCat($id)
+    {
+        //check nếu nó còn danh mục con thì không được xóa
+        //check nếu nó chứa sản phẩm bên trong thì cũng ko cho xóa
+
+//        $product= ProductCategory::find($id)->products->where('cat_id', '=', $id);
+        $cat_parent = ProductCategory::where('parent_id', '=', $id)->get();
+        if (count($cat_parent) > 0) {
+            //Không được xóa danh mục cha nếu có danh mục con
+            Toastr::warning('Bạn phải xóa danh mục con trước khi thực hiện thao tác này', 'Xóa danh mục');
+            return redirect('admin/product/cat/list');
+        } else {
+            //Thực hiện xóa
+            ProductCategory::find($id)->delete();
+            Toastr::success('Xóa thành công', 'Xóa danh mục');
+            return redirect('admin/product/cat/list');
+        }
     }
 }

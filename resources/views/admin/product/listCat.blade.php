@@ -74,6 +74,7 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Tên danh mục</th>
                                                     <th scope="col">Slug</th>
+                                                    <th scope="col">Trạng thái</th>
                                                     <th scope="col">Tác vụ</th>
                                                 </tr>
                                                 </thead>
@@ -87,6 +88,7 @@
                                                         <th scope="row">{{ $t }}</th>
                                                         <td> {{ show_categories($cat->level, $cat->name)  }}</td>
                                                         <td>{{ $cat->slug }}</td>
+                                                        <td>{!! show_status_product_category($cat->status) !!} </td>
                                                         <td>
                                                             <button
                                                                 class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
@@ -94,7 +96,7 @@
                                                                 <i class="feather icon-edit f-16  text-c-green"></i>
                                                             </button>
                                                             <a class="btn btn-danger btn-sm btn-action btn-delete"
-                                                               href="{{ route('product.cat.delete', 3) }}"
+                                                               href="{{ route('product.cat.delete', $cat->id) }}"
                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
                                                                 <i class="feather icon-trash-2 f-16 text-c-red"></i>
                                                             </a>

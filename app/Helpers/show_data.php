@@ -1,7 +1,7 @@
 <?php /** @noinspection SpellCheckingInspection */
 /** @noinspection TypeUnsafeComparisonInspection */
 if (!function_exists('show_categories')) {
-    function show_categories($level, $name, $string = "---^")
+    function show_categories($level, $name, $string = "|---")
     {
         $name_cat = str_repeat($string, $level) . $name;
         return $name_cat;
@@ -17,7 +17,7 @@ if (!function_exists('data_tree')) {
                 $item->level = $level;
                 $result[] = $item;
                 //Loại bỏ phần tử vừa chạy ra, để ko lặp lại nó nữa
-                unset($data[$item->id]);
+//                unset($data[$item->id]);
                 $child = data_tree($data, $item->id, $level + 1);
                 // gộp mảng con luon
                 $result = array_merge($result, $child);
@@ -30,6 +30,19 @@ if (!function_exists('data_tree')) {
 
 if (!function_exists('show_status_page')) {
     function show_status_page($status)
+    {
+        $array_data = array(
+            'active' => '<span class="badge badge-success">Kích hoạt</span>',
+            'inactive' => '<span class="badge badge-secondary">Vô hiệu hóa</span>'
+        );
+        if (array_key_exists($status, $array_data)) {
+            return $array_data[$status];
+        }
+    }
+}
+
+if (!function_exists('show_status_product_category')) {
+    function show_status_product_category($status)
     {
         $array_data = array(
             'active' => '<span class="badge badge-success">Kích hoạt</span>',
