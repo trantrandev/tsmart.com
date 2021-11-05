@@ -96,8 +96,7 @@
                                                             <button
                                                                 class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
                                                                 type="button" data-modal="modal-edit-product-cat"
-                                                                data-url="{{ route('product.cat.edit', $cat->id) }}"
-                                                                data-id="{{ $cat->id }}">
+                                                                data-url="{{ route('product.cat.edit', $cat->id) }}">
                                                                 <i class="feather icon-edit f-16  text-c-green"></i>
                                                             </button>
                                                             <a class="btn btn-danger btn-sm btn-action btn-delete"
@@ -129,7 +128,7 @@
     <script src="{{ asset('admin/plugins/modal-window-effects/js/classie.js') }}"></script>
     <script src="{{ asset('admin/plugins/modal-window-effects/js/modalEffects.js') }}"></script>
     <script>
-        {{--        Hien thi session storage status after update and reload page by ajax--}}
+        {{--   Hien thi session storage status after update and reload page by ajax--}}
         if (sessionStorage.getItem('update_product_cat') === 'ok') {
             toastr.options = {
                 // set time out
@@ -150,14 +149,6 @@
                 $('#modal-edit-product-cat').addClass('md-show');
                 // Lấy url từ data-url kèm id bản ghi để dể controller lấy đc id
                 var url = $(this).attr('data-url');
-
-                // Lấy thông tin user đang login để disable trạng thái
-                var user_login = {!! Auth()->user() !!};
-                // Lấy id có trong view list
-                var id = $(this).data('id');
-                var data = {
-                    id: id
-                };
                 $.ajax({
                     //phương thức get
                     type: 'get',
@@ -169,7 +160,6 @@
                         $('#form-edit').trigger('reset');
                     },
                     success: function (response) {
-                        console.log(response);
                         // ---- Xuất dữ liệu đưa lên modal ----
                         $('#name-edit').val(response.data.name);
                         $('#slug-edit').val(response.data.slug);
