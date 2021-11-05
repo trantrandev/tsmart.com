@@ -78,11 +78,10 @@
         });
     });
 
-    function changeToSlug(name) {
+    function changeToSlug(id_name, id_slug = 'slug') {
         let slug;
         //Lấy text từ thẻ input title
-        slug = document.getElementById(name).value;
-        console.log(slug);
+        slug = document.getElementById(id_name).value;
         slug = slug.toLowerCase();
 
         //Đổi ký tự có dấu thành không dấu
@@ -107,7 +106,7 @@
         slug = '@' + slug + '@';
         slug = slug.replace(/@-|-@|@/gi, '');
         //In slug ra textbox có id “slug”
-        document.getElementById('slug').value = slug;
+        document.getElementById(id_slug).value = slug;
     }
 
     //  mask phone

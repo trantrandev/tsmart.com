@@ -1,4 +1,11 @@
-<?php /** @noinspection PhpUndefinedFieldInspection */
+<?php /** @noinspection SpellCheckingInspection */
+/** @noinspection PhpUndefinedVariableInspection */
+/** @noinspection PhpUnreachableStatementInspection */
+/** @noinspection ForgottenDebugOutputInspection */
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedMethodInspection */
+/** @noinspection UnknownColumnInspection */
+/** @noinspection PhpUndefinedFieldInspection */
 /** @noinspection ReturnTypeCanBeDeclaredInspection */
 
 /** @noinspection AccessModifierPresentedInspection */
@@ -9,6 +16,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Toastr;
 
 class AdminProductCategoryController extends Controller
@@ -56,6 +64,64 @@ class AdminProductCategoryController extends Controller
         ProductCategory::create($data);
         Toastr::success('Thêm thành công', 'Thêm danh mục');
         return redirect('admin/product/cat/list');
+    }
+
+    function editCat(Request $request, $id)
+    {
+        $product_cat_by_id = ProductCategory::find($id);
+        return response()->json(['data' => $product_cat_by_id]);
+    }
+
+    function updateCat(Request $request, $id)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name_edit' => ['required', 'string', 'max:255'],
+                'status_edit' => 'required',
+                'slug_edit' => ['required', 'string'],
+            ],
+            [
+                'required' => ':attribute không được để trống',
+                'min' => ':attribute ít nhất phải :min ký tự',
+                'max' => ':attribute nhiều nhất chỉ :max ký tự',
+                'status.required' => 'Hãy chọn :attribute',
+            ],
+            [
+                'name_edit' => 'Danh mục',
+                'slug_edit' => 'Slug',
+                'status_edit' => 'Trạng thái'
+            ]
+        );
+
+        // * Nếu như nằm trong validate thì chuyển thành mảng chuyển đi
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            /*todo
+            1. Kiểm tra nếu vẫn giữ nguyên slug cũ của cái vừa chọn thì:
+                - kiểm tra các slug còn lại có bị trùng không
+                - Nếu trùng thì báo lỗi, không thì ra ngoài thực hiện cập nhật
+            */
+            $slug_old = ProductCategory::select('slug')->find($id);
+            if ($slug_old->slug !== $request->slug_edit) {
+                //check slug trong database nếu trùng thì báo lỗi
+                if (ProductCategory::where('slug', '=', $request->slug_edit)->exists()) {
+                    //slug đã tồn tại trong hệ thống, xuất lỗi
+                    return response()->json(['code' => 0, 'error' => $validator->getMessageBag()->add('slug_edit','Slug đã tồn tại, hãy nhập slug khác')]);
+                }
+            }
+
+            $data = array(
+                'name' => $request->name_edit,
+                'slug' => $request->slug_edit,
+                'status' => $request->status_edit,
+                'updated_by' => Auth::id()
+            );
+
+            ProductCategory::find($id)->update($data);
+            return response()->json(['code' => 1]);
+        }
     }
 
     function deleteCat($id)

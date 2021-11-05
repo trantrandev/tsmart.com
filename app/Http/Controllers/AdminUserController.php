@@ -275,7 +275,6 @@ class AdminUserController extends Controller
 
     function edit(Request $request, $id)
     {
-
         if ($request->input('action') === 'trash') {
             $user = User::withTrashed()->find($id);
         } else {

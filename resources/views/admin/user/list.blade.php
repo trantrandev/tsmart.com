@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('add_css')
+    <!--suppress SpellCheckingInspection, ES6ConvertVarToLetConst -->
     <link rel="stylesheet" href="{{ asset('admin/css/switch.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/plugins/data-tables/css/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/plugins/modal-window-effects/css/md-modal.css') }}">
@@ -33,7 +34,7 @@
                                 <div class="card-header pb-0 border-0">
                                     <h5>List user</h5>
                                     <a href="{{ url('admin/user/add') }}" type="button"
-                                        class="btn btn-primary waves-effect waves-light float-right d-inline-block">
+                                       class="btn btn-primary waves-effect waves-light float-right d-inline-block">
                                         <i class="feather icon-plus m-r-5"></i> Add User
                                     </a>
                                 </div>
@@ -41,13 +42,13 @@
                                 <div class="card-block pt-0 pb-0">
                                     <div class="analytic">
                                         <a href="{{ request()->fullUrlWithQuery(['status' => 'active']) }}"
-                                            class="text-primary active">Active
+                                           class="text-primary active">Active
                                             <span class="text-muted"> ({{ $count[0] }}) |</span></a>
                                         <a href="{{ request()->fullUrlWithQuery(['status' => 'inactive']) }}"
-                                            class="text-primary inactive">Inactive
+                                           class="text-primary inactive">Inactive
                                             <span class="text-muted"> ({{ $count[1] }}) | </span></a>
                                         <a href="{{ request()->fullUrlWithQuery(['status' => 'trash']) }}"
-                                            class="text-primary trash">Trash
+                                           class="text-primary trash">Trash
                                             <span class="text-muted"> ({{ $count[2] }})
                                             </span></a>
                                     </div>
@@ -64,79 +65,80 @@
                                                 @endforeach
                                             </select>
                                             <input type="submit" name="btn_action" value="Áp dụng"
-                                                class="btn btn-sm btn-primary m-0">
+                                                   class="btn btn-sm btn-primary m-0">
                                         </div>
                                         <div class="table-responsive">
                                             <table id="users-table"
-                                                class="display table table-checkall nowrap table-striped table-hover"
-                                                style="width:100%">
+                                                   class="display table table-checkall nowrap table-striped table-hover"
+                                                   style="width:100%">
                                                 <thead>
-                                                    <tr>
-                                                        <th><input type="checkbox" name="checkall"></th>
-                                                        <th>STT</th>
-                                                        <th>Avatar</th>
-                                                        <th>Name</th>
-                                                        <th>Email</th>
-                                                        <th>Created date</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
+                                                <tr>
+                                                    <th><input type="checkbox" name="checkall"></th>
+                                                    <th>STT</th>
+                                                    <th>Avatar</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Created date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @php
-                                                        $t = 0;
-                                                    @endphp
+                                                @php
+                                                    $t = 0;
+                                                @endphp
 
-                                                    @foreach ($users as $user)
-                                                        <tr id="item-{{ $user->id }}">
-                                                            <td class="check"><input type="checkbox"
-                                                                    name="list_check[]" value="{{ $user->id }}"></td>
-                                                            @php
-                                                                $t++;
-                                                            @endphp
-                                                            <td><b>{{ $t }}</b></td>
-                                                            @if ($user->avatar != null)
-                                                                <td><img style="width: 50px"
-                                                                        src="{{ asset('admin/images/users/' . $user->avatar) }}"
-                                                                        alt="img avatar"></td>
+                                                @foreach ($users as $user)
+                                                    <tr id="item-{{ $user->id }}">
+                                                        <td class="check"><input type="checkbox"
+                                                                                 name="list_check[]"
+                                                                                 value="{{ $user->id }}"></td>
+                                                        @php
+                                                            $t++;
+                                                        @endphp
+                                                        <td><b>{{ $t }}</b></td>
+                                                        @if ($user->avatar != null)
+                                                            <td><img style="width: 50px"
+                                                                     src="{{ asset('admin/images/users/' . $user->avatar) }}"
+                                                                     alt="img avatar"></td>
 
-                                                            @else
-                                                                {{-- show image default follow gender --}}
-                                                                <td>
-                                                                    <img style="width: 50px"
-                                                                        src="{{ asset(show_string_avatar($user->gender)) }}"
-                                                                        alt="img avatar">
-                                                                </td>
+                                                        @else
+                                                            {{-- show image default follow gender --}}
+                                                            <td>
+                                                                <img style="width: 50px"
+                                                                     src="{{ asset(show_string_avatar($user->gender)) }}"
+                                                                     alt="img avatar">
+                                                            </td>
 
+                                                        @endif
+                                                        <td>{{ $user->name }}</td>
+                                                        <td>
+                                                            {{ $user->email }}
+                                                        </td>
+                                                        <td>{{ $user->created_at }}</td>
+                                                        <td class="status">
+                                                            {!! Auth::id() == $user->id ? show_status_user_current($user->id) : show_status_user($user->status, $user->id) !!}
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
+                                                                type="button" data-modal="modal-edit-user"
+                                                                data-url="{{ route('user.edit', $user->id) }}"
+                                                                data-id="{{ $user->id }}"
+                                                                data-stt="{{ $t }}">
+                                                                <i class="feather icon-edit f-16  text-c-green"></i>
+                                                            </button>
+
+                                                            @if (Auth::id() != $user->id)
+                                                                <a class="btn btn-danger btn-sm btn-action btn-delete"
+                                                                   href="{{ route('user.delete', $user->id) }}"
+                                                                   onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
+                                                                    <i class="feather icon-trash-2 f-16 text-c-red"></i>
+                                                                </a>
                                                             @endif
-                                                            <td>{{ $user->name }}</td>
-                                                            <td>
-                                                                {{ $user->email }}
-                                                            </td>
-                                                            <td>{{ $user->created_at }}</td>
-                                                            <td class="status">
-                                                                {!! Auth::id() == $user->id ? show_status_user_current($user->id) : show_status_user($user->status, $user->id) !!}
-                                                            </td>
-                                                            <td>
-                                                                <button
-                                                                    class="btn btn-primary btn-sm btn-action btn-edit md-trigger"
-                                                                    type="button" data-modal="modal-edit-user"
-                                                                    data-url="{{ route('user.edit', $user->id) }}"
-                                                                    data-id="{{ $user->id }}"
-                                                                    data-stt="{{ $t }}">
-                                                                    <i class="feather icon-edit f-16  text-c-green"></i>
-                                                                </button>
-
-                                                                @if (Auth::id() != $user->id)
-                                                                    <a class="btn btn-danger btn-sm btn-action btn-delete"
-                                                                        href="{{ route('user.delete', $user->id) }}"
-                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
-                                                                        <i class="feather icon-trash-2 f-16 text-c-red"></i>
-                                                                    </a>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                                 </tbody>
                                             </table>
                                     </form>
@@ -169,7 +171,7 @@
         });
     </script> --}}
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // fixed header for talbe
             var table = $('#users-table').dataTable();
             new $.fn.dataTable.FixedHeader(table);
@@ -182,7 +184,7 @@
 
             // change status
             function change_status() {
-                $(document).on("change", 'table#users-table td.status input', function() {
+                $(document).on("change", 'table#users-table td.status input', function () {
                     // get status
                     var status = $(this).prop('checked') == true ? "active" : "inactive";
                     var user_id = $(this).data('id');
@@ -201,7 +203,7 @@
                         type: 'GET',
                         data: data, // Dữ liệu truyền lên Server
                         dataType: 'JSON', // html, text, json
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status == "true") {
                                 // display count number record
                                 $(".analytic a.active span").text(" (" + response.count[0] +
@@ -235,7 +237,7 @@
 
             // show info edit
             function edit() {
-                $(document).on("click", "button.btn-edit", function(e) {
+                $(document).on("click", "button.btn-edit", function (e) {
                     // Đưa modal về mặc định
                     e.preventDefault();
                     // Phải thêm class md-show này vô vì khi update đã bị xóa
@@ -259,9 +261,9 @@
                         type: 'get',
                         url: url,
                         data: data,
-                        beforeSend: function() {
+                        beforeSend: function () {
                             // Nếu cái status có id edit == id đăng nhập thì disable nó
-                            if (user_login['id'] == id) {
+                            if (user_login['id'] === id) {
                                 $('select#status-edit').attr('disabled', 'disabled');
                             } else {
                                 $('select#status-edit').removeAttr('disabled');
@@ -271,12 +273,12 @@
                             $('#form-edit').trigger('reset');
                             $('.file-avatar label.custom-file-label').text('Chọn file');
                         },
-                        success: function(response) {
+                        success: function (response) {
                             // ---- Xuất dữ liệu đưa lên modal ----
                             $('#name-edit').val(response.data.name);
                             $('#email-edit').val(response.data.email);
                             // gender
-                            if (response.data.gender == "male") {
+                            if (response.data.gender === "male") {
                                 // xóa checked đã check trước
                                 $('#female-edit').removeAttr('checked');
                                 $('#male-edit').attr('checked', 'true');
@@ -285,7 +287,7 @@
                                 $('#female-edit').attr('checked', 'true');
                             }
                             //select status
-                            if (response.data.status == "active") {
+                            if (response.data.status === "active") {
                                 $('#status-edit option[value="active"]').attr('selected',
                                     'selected');
                             } else {
@@ -317,7 +319,7 @@
                                 response.data.id);
                             $('#form-edit').attr('data-stt', stt);
                         },
-                        error: function(error) {
+                        error: function (error) {
 
                         }
                     })
@@ -326,7 +328,7 @@
 
             // update
             function update() {
-                $(document).on('submit', '#form-edit', function(e) {
+                $(document).on('submit', '#form-edit', function (e) {
                     e.preventDefault();
                     // get
                     var form = this;
@@ -346,7 +348,7 @@
                     // Lấy id trong form để so sánh
                     var id = $(form).data('id');
                     // Nếu cái status có id edit == id đăng nhập add giá trị cũ cho nó để gửi đi
-                    if (user_login['id'] == id) {
+                    if (user_login['id'] === id) {
                         var active = 'active';
                         form_data.append('status_edit', active);
                     }
@@ -359,19 +361,19 @@
                         contentType: false,
                         processData: false,
                         // Trước khi gửi loại những error validator ra
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $(form).find('span.error-text').text('');
                         },
-                        success: function(response) {
-                            if (response.code == 0) {
+                        success: function (response) {
+                            if (response.code === 0) {
                                 // Mỗi trường lỗi từ response sẽ ứng với class error bên form: class = name_edit_error => xuất lỗi ra
-                                $.each(response.error, function(prefix, val) {
+                                $.each(response.error, function (prefix, val) {
                                     $(form).find('span.' + prefix + '_error').text(val[
                                         0]);
                                 });
                             } else {
-                                if (response.code == 1) {
-                                    if (response.html != '') {
+                                if (response.code === 1) {
+                                    if (response.html !== '') {
                                         $('tr#item-' + response.id).html(response.html);
                                     } else {
                                         // $('tr#item-' + response.id).hide();
@@ -395,7 +397,7 @@
                             }
 
                         },
-                        error: function(jqXHR, textStatus, errorThrown) {
+                        error: function (jqXHR, textStatus, errorThrown) {
                             //xử lý lỗi tại đây
                         }
                     });
