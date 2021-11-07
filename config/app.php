@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -183,6 +183,9 @@ return [
         // laravel file manager
         UniSharp\LaravelFilemanager\LaravelFilemanagerServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        //money format
+        App\Providers\BladeServiceProvider::class,
+
 
     ],
 
@@ -238,7 +241,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         // notification toastr
-        'Toastr'  => Brian2694\Toastr\Facades\Toastr::class,
+        'Toastr' => Brian2694\Toastr\Facades\Toastr::class,
         // data table yajra
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         // laravel file manager

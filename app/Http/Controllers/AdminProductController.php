@@ -6,12 +6,16 @@ use Illuminate\Http\Request;
 
 class AdminProductController extends Controller
 {
-    public function storeCat(Request $request)
+    public function list()
     {
-
+        return view('admin.product.list');
     }
 
-    public function list()
+    public function add() {
+        return view('admin.product.add');
+    }
+
+    public function storeCat(Request $request)
     {
 
     }

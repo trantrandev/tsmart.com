@@ -17,6 +17,4 @@ class ProductCategory extends Model
         'added_by',
         'updated_by'
     ];
-
-    
 }

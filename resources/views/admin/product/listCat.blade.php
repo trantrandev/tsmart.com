@@ -157,6 +157,8 @@
                     beforeSend: function () {
                         // Làm mới lại modal mỗi lần load lên
                         $('#form-edit').find('span.error-text').text('');
+                        $('#status-edit option').removeAttr('selected');
+                        $('#cat-edit option').removeAttr('selected');
                         $('#form-edit').trigger('reset');
                     },
                     success: function (response) {
@@ -166,7 +168,7 @@
 
                         // select categories
                         if (response.data.parent_id === 0) {
-                            $('#cat-edit option[value="0"]').attr('selected',
+                            $('#cat-edit option[value=0]').attr('selected',
                                 'selected');
                         } else {
                             $('#cat-edit option[value="' + response.data.parent_id + '"]').attr('selected',
@@ -181,7 +183,7 @@
                                 'selected');
                         }
 
-                        // Thêm data-url chứa route sửa đã được chỉ định vào modal form edit vừa hiện lên để lấy id được chọn
+                        // Thêm đường dẫn sử lý chỉ định vào modal form edit vừa hiện lên để lấy id được chọn
                         $('#form-edit').attr('action',
                             '{{ URL::to('admin/product/cat/update') }}/' +
                             response.data.id);
@@ -214,7 +216,6 @@
                         $(form).find('span.error-text').text('');
                     },
                     success: function (response) {
-                        console.log(response);
                         if (response.code === 0) {
                             // Mỗi trường lỗi từ response sẽ ứng với class error bên form: class = name_edit_error => xuất lỗi ra
                             $.each(response.error, function (prefix, val) {

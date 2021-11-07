@@ -99,8 +99,8 @@ class AdminProductCategoryController extends Controller
             return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
             /*todo
-            1. Kiểm tra nếu vẫn giữ nguyên slug cũ của cái vừa chọn thì:
-                - kiểm tra các slug còn lại có bị trùng không
+            1. Kiểm tra nếu có chỉnh sửa slug thì:
+                - kiểm tra slug đã nhập có tồn tại trong database chưa
                 - Nếu trùng thì báo lỗi, không thì ra ngoài thực hiện cập nhật
             */
             $slug_old = ProductCategory::select('slug')->find($id);

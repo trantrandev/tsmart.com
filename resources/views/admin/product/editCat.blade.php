@@ -2,7 +2,7 @@
     <div class="md-content">
         <h3 class="theme-bg2">Chỉnh sửa danh mục</h3>
         <div>
-            {!! Form::open(['METHOD' => 'POST', 'id' => 'form-edit', 'autocomplete'=>"off"]) !!}
+            {!! Form::open(['id' => 'form-edit', 'autocomplete'=>"off"]) !!}
             <div class="form-group row align-items-center">
                 <div class="col-sm-2">
                     {!! Form::label('name-edit', 'Name') !!}
